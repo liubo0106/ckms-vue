@@ -1,0 +1,16 @@
+.row-class{
+  background: #f0f9eb!important;
+}
+/*.el-form--inline .el-form-item__label{*/
+  /*width: 40px;*/
+  /*color: #99a9bf;*/
+/*}*/
+.el-badge__content.is-fixed{
+  top:16px;
+}
+.w-e-menu{
+  z-index: 2 !important;
+}
+.w-e-text-container{
+  z-index: 1 !important;
+}
