@@ -68,8 +68,10 @@
                     pageNo:1,
                     pageSize:15,
                 },
-                totalNum:0
+                totalNum:0,
+
             }
+
         },
         methods: {
             indexMethod(index) {

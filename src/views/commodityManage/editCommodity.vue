@@ -75,20 +75,26 @@
                 </el-row>
                 <el-row>
                     <el-col :span="8">
-                        <el-form-item  label="单位" prop="standard">
-                            <el-select v-model="editForm.standard" placeholder="请选择"  style="width: 100%" >
+                        <el-form-item label="规格含量" prop="specPrefNum">
+                            <el-input v-model="editForm.specPrefNum"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item  label="基础单位" prop="standard">
+                            <el-select v-model="editForm.standard" placeholder="请选择"  style="width: 200px" >
                                 <el-option v-for="item in standardDataDicList" :label="item.name" :value="item.name"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
-<!--                    <el-col :span="8">-->
-<!--                        <el-form-item  label="是否对店铺可见">-->
-<!--                            <template>-->
-<!--                                <el-radio v-model="editForm.isLook" label="1">是</el-radio>-->
-<!--                                <el-radio v-model="editForm.isLook" label="0">否</el-radio>-->
-<!--                            </template>-->
-<!--                        </el-form-item>-->
-<!--                    </el-col>-->
+                </el-row>
+                <el-row>
+                    <el-col :span="8">
+                        <el-form-item label="规格单位" prop="specSufStandard">
+                            <el-select v-model="editForm.specSufStandard" placeholder="请选择"  style="width: 100%" >
+                                <el-option v-for="item in standardDataDicList" :label="item.name" :value="item.name"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="8">
@@ -165,6 +171,8 @@
                     stock:'',
                     safeStock:'',
                     dataDicListId:'',
+                    specPrefNum:'',
+                    specSufStandard:'',
                     isLook:"0",
                     price:"0"
 
@@ -187,6 +195,12 @@
                     ],
                     deptArray: [
                         { type: 'array', required: true, message: '请选择原料分类', trigger: 'change' }
+                    ],
+                    specPrefNum:[
+                        { required: true, message: '请输入原料规格', trigger: 'blur' },
+                    ],
+                    specSufStandard:[
+                        { required: true, message: '请选择原料规格单位', trigger: 'change' },
                     ]
 
                 },
@@ -230,6 +244,8 @@
                         _this.editForm.isLook = data.isLook+'';
                         _this.editForm.price = data.price;
                         _this.editForm.isWarning = data.isWarning;
+                        _this.editForm.specPrefNum = data.specPrefNum;
+                        _this.editForm.specSufStandard = data.specSufStandard;
                         let ss = data.strArray;
                         if(ss){
                             _this.editForm.deptArray = ss.length>0 ? ss.split(','):[];
@@ -293,7 +309,10 @@
                             safeStock: _this.editForm.safeStock,
                             isLook: _this.editForm.isLook,
                             price: _this.editForm.price,
-                            isWarning: _this.editForm.isWarning
+                            isWarning: _this.editForm.isWarning,
+                            specPrefNum:_this.editForm.specPrefNum,
+                            specSufStandard:_this.editForm.specSufStandard,
+                            spec:`${_this.editForm.specPrefNum}${_this.editForm.standard}/${_this.editForm.specSufStandard}`
                         };
                         requestSaveProduct(editFormParam).then(res => {
                             if(res.status==400){

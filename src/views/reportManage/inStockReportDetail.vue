@@ -112,6 +112,7 @@
                         <el-table-column align="center" header-align='center' type="index" :index="indexMethod" label="行号" width="100"></el-table-column>
                         <el-table-column align="center" header-align='center' prop="productSerialNo" label="原料编码"></el-table-column>
                         <el-table-column align="center" header-align='center' prop="productName" label="原料名称"></el-table-column>
+                        <el-table-column align="center" header-align='center' prop="productCategoryName" label="原料分类"></el-table-column>
                         <el-table-column align="center" header-align='center' prop="productNumber" label="数量"></el-table-column>
                         <el-table-column align="center" header-align='center' prop="productStandard" label="单位" width="80"></el-table-column>
                         <el-table-column align="center" header-align='center' prop="productPrice" label="单价">
@@ -127,7 +128,7 @@
                         <el-table-column align="center" header-align='center' prop="createTime" label="创建时间"></el-table-column>
                         <!--<el-table-column align="center" header-align='center' prop="rawPrice" label="原始单价"></el-table-column>-->
                         <!--<el-table-column align="center" header-align='center' prop="discount" label="折扣率"></el-table-column>-->
-                        
+
         <!--                <el-table-column align="center" header-align='center' prop="amount" label="总价"></el-table-column>-->
         <!--                <el-table-column align="center" header-align='center' prop="backNumber" label="退货数量"></el-table-column>-->
                         <!-- <el-table-column align="center" header-align='center' prop="remark" label="备注"></el-table-column> -->

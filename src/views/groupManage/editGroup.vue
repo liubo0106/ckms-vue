@@ -69,6 +69,7 @@
                             ￥{{scope.row.costPrice | substr}}
                         </template>
                     </el-table-column>
+                    <el-table-column align="center" header-align='center' prop="netYield" label="出成率" width="140"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="number" label="净数量" width="140"></el-table-column>
                     <el-table-column align="center" header-align='center' label="操作" width="180">
                         <template slot-scope="scope">

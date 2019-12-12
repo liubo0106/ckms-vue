@@ -32,6 +32,14 @@
                 <el-table-column align="center" header-align='center' prop="dateTime" label="报损单日期" width="140"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="totalNumber" label="总量" width="80"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="statusName" label="状态" width="140"></el-table-column>
+                <el-table-column align="center" header-align='center' prop="lossType" label="报损类型" width="140">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.lossType==1">物品损坏</span>
+                        <span v-if="scope.row.lossType==2">物品遗失</span>
+                        <span v-if="scope.row.lossType==3">员工餐使用</span>
+                        <span v-if="scope.row.lossType==4">库存错误</span>
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" header-align='center' prop="createUser" label="创建人" width="140"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="updateUser" label="修改人" width="140"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="confirmer" label="确认人" width="140"></el-table-column>

@@ -85,9 +85,17 @@
                 <el-form-item label="会员电话" prop="phone" v-if="dialogForm.type==2">
                     <el-input placeholder='请输入' v-model="dialogForm.phone" :maxlength="25" disabled style="width: 218px">{{dialogForm.phone}}</el-input>
                 </el-form-item>
+                <div v-if="showCoupon!=2">
+                <el-form-item label="选择优惠卷" prop="phone" v-if="dialogForm.type==2 || this.couponData!=''">
+                    <span @click="checkCoupon" style="cursor: pointer;">有可使用优惠卷</span>
+                </el-form-item>
+                </div>
+                <el-form-item label="优惠金额" prop="phone" v-if="dialogForm.type==2 || this.couponData!=''">
+                    <span style="cursor: pointer;" v-html="dialogForm.coupon"></span>
+                </el-form-item>
                 <el-form-item label="实收金额">
                     <!--￥{{dialogForm.discountPrice}}-->
-                    <el-input-number size="medium" :precision="2" v-model="dialogForm.discountPrice" :min="0"></el-input-number>
+                    <el-input-number size="medium" :precision="2" v-model="dialogForm.discountPrice" ref="" :min="0"></el-input-number>
                 </el-form-item>
                 <!--备注-->
                 <el-form-item label="备注"  style="width: 340px">
@@ -213,6 +221,29 @@
                 <el-button type="primary" :loading="saveLoading" @click="dialogIsOkFormSubmit">确 定</el-button>
             </div>
         </el-dialog>
+        <el-dialog title="选择优惠卷" :visible.sync="dialogCoupon" width="30%">
+            <div class="coupon-box">
+                <div class="coupon-list" v-for="(item,index) in couponData">
+                    <div class="coupon-left">
+                        <span>￥{{item.couponAmount}}</span>
+                        <span>抵用卷</span>
+                    </div>
+                    <div class="coupon-center">
+                        <h3>{{item.couponName}}</h3>
+                        <p>有效期至:{{item.couponEndTime}}</p>
+                        <p v-if="item.superimposedSheets !=''">满{{item.superimposedSheets}}元使用</p>
+                    </div>
+                    <div class="coupon-right">
+                        <div class="check">
+                            <el-checkbox :label="item.check" :disabled="item.isPrice" @change="checkCoupondata(item,index)">选择</el-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                <el-button type="primary" @click="confrimCoupon()">确认</el-button>
+            </div>
+        </el-dialog>
     </section>
 </template>
 <script type="text/ecmascript-6">
@@ -226,6 +257,7 @@
         requestStoreOrderDetailListByPid,
         requestTreeList,
         requestTurntable,
+        requestCouponInfo,
         requestCopyOrder,
         requestStoreOrderCheckStock,
         requestSaveStoreOrde,
@@ -257,6 +289,9 @@
                         label: '其它支付'
                         }],
                 buttonPu:'primary',
+                dialogCoupon:false,
+                discount:'',
+                showCoupon:1,
                 buttonHui:'',
                 tableData: null,
                 dialogTreeFormVisible:false,//会员弹出层
@@ -311,6 +346,7 @@
                     noDiscountAmount:0,//不参与打折金额
                     recPrice: 0,//应收金额
                     fraction:'',
+                    coupon:0,//优惠卷
                     type:1,
                     customerId:customerId,
                     paymentMethod:'',
@@ -328,6 +364,7 @@
                     oldDeskNo:'',
                     oldDeskId:''
                 },
+                couponData:[],
                 dialogCopyFormVisible:false,//转台弹出层
                 dialogCopyForm:{
                     deskId:'',
@@ -341,6 +378,7 @@
                 },
                 dialogIsOkFormVisible:false,
                 dialogIsOkForm:{},
+                couponDataList:[],
                 orderList:[],
                 rules:{
                  paymentMethod: [
@@ -349,7 +387,17 @@
                 },
             }
         },
-
+        computed:{
+            totalPrice:function() {
+                var total = 0;
+                if(this.dialogForm.coupon==0){
+                    total=this.dialogForm.discountPrice;
+                }else{
+                    total=this.dialogForm.discountPrice-this.dialogForm.coupon;
+                }
+                return total;
+            },
+        },
         methods: {
             handelDoType(row,type){
                 if(type == 'zhuantai'){
@@ -365,9 +413,50 @@
                     this.dialogCopyFormVisible = true;
                 }
             },
+            checkCoupondata(data,index){
+                this.couponData[index].check=!this.couponData[index].check;
+
+            },
+            confrimCoupon(){
+                this.couponDataList=[];
+                let couponPrice=0;
+                for(let i=0;i<this.couponData.length;i++){
+                    if(this.couponData[i].check){
+                        this.couponDataList.push(this.couponData[i])
+                        couponPrice+=parseInt(this.couponData[i].couponAmount);
+                    }
+                }
+                if(this.couponDataList.length>4){
+                    this.$message({
+                        type:'error',
+                        message:'只能选择四个优惠卷',
+                    })
+                    return false;
+                }
+                this.dialogForm.coupon=couponPrice;
+                this.dialogForm.discountPrice=this.dialogForm.discountPrice-this.dialogForm.coupon;
+                //this.spanClick();
+                this.showCoupon=2;
+                console.log(this.showCoupon);
+                this.dialogCoupon=false;
+
+            },
+            spanClick(e){
+              console.log(e);
+            },
             changePlay(val){
                 this.dialogForm.paymentMethod=val;
                 console.log(this.dialogForm.paymentMethod);
+            },
+            //选择优惠卷
+            checkCoupon(){
+                this.dialogCoupon=true;
+                for(let i=0;i<this.couponData.length;i++){
+                    if(this.couponData[i].superimposedSheets>this.dialogForm.discountPrice || this.couponData[i].couponUploadStatus==1){
+                        this.couponData[i].isPrice=true;
+                    }
+                  
+                }
             },
             dialogZhuanTaiFormSubmit(formName){
                 let _this = this;
@@ -537,10 +626,13 @@
             //选择会员
             handleClickTreeAdd2(index,row){
                 let _this = this;
-                let discount = parseFloat(row.discount/10).toFixed(2);
+                let discount = row.discount;
                 let noDiscountAmount = parseFloat(this.dialogForm.noDiscountAmount);
                 let recPrice = parseFloat(this.dialogForm.recPrice);
                 let totalPrice = parseFloat(this.dialogForm.totalPrice);
+                console.log('discount:'+discount)
+                console.log('noDiscountAmount:'+noDiscountAmount)
+                console.log('totalPrice:'+totalPrice)
                if(row.amount-_this.dialogForm.discountPrice<=0){
                    _this.dialogTreeFormVisible = false;
                    _this.clientType="0"
@@ -552,8 +644,6 @@
                        message: '余额不足请充值!',
                        duration:3000,
                        onClose:function(){
-
-
                        }
                    });
 
@@ -562,10 +652,25 @@
                    _this.dialogForm.phone=row.phone;
                    _this.dialogForm.memberId=row.id;
                    _this.dialogForm.discount2=row.discount;
+                   _this.dialogForm.discount=row.discount;
                    _this.dialogForm.discountPrice = (totalPrice * discount + (1 - discount) * noDiscountAmount).toFixed(2);
+                   console.log(_this.dialogForm.discountPrice);
                    _this.smallRemoveZero=(discount*parseFloat(_this.dialogForm.discountPrice))-10;//最小抹零
                    _this.bigRemoveZero=discount*parseFloat(_this.dialogForm.discountPrice);//最大抹零
                    _this.dialogTreeFormVisible = false;
+                   requestCouponInfo({memberId:row.id}).then((res)=>{
+                       if(res.status==200){
+                           this.couponData=res.data;
+                           this.couponData.forEach((item)=>{
+                               this.$set(item,'check',false)
+                               this.$set(item,'isPrice',false)
+                           })
+                           console.log(this.couponData);
+                       }
+
+                   })
+
+
                }
             },
             initWebSocket(){ //初始化weosocket
@@ -740,11 +845,27 @@
 								    this.dialogForm.discount=10;
 								}
 								//换算抹零金额
-								let discount = parseFloat(this.dialogForm.discount/10).toFixed(2);
+                                let arr=[];
+                                for(let i=0;i<this.couponDataList.length;i++){
+                                    arr.push(this.couponDataList[i].id)
+                                }
+                                if(this.dialogForm.type==2){
+                                    this.discount = this.dialogForm.discount;
+                                }else{
+                                    this.discount = parseFloat(this.dialogForm.discount/10).toFixed(2);
+                                }
+                                let id=arr.join(',');
 								let noDiscountAmount = parseFloat(this.dialogForm.noDiscountAmount);
 								let totalPrice = parseFloat(this.dialogForm.totalPrice);
-								let fraction = (totalPrice * discount + (1 - discount) * noDiscountAmount).toFixed(2)-this.dialogForm.discountPrice;
-								requestStoreOrdeCheckOut({deskId:this.dialogForm.deskId,discount:this.dialogForm.discount,memberId:this.dialogForm.memberId,remark: this.dialogForm.remark,fraction:fraction,type:this.dialogForm.type,customerId:this.dialogForm.customerId,paymentMethod:this.dialogForm.paymentMethod}).then(res => {
+								let fraction = ((totalPrice * this.discount + (1 - this.discount) * noDiscountAmount)-this.dialogForm.coupon).toFixed(2)-this.dialogForm.discountPrice;
+                                console.log('this.dialogForm.discount:'+this.dialogForm.discount)
+								console.log('discount:'+this.discount)
+                                console.log('noDiscountAmount:'+noDiscountAmount)
+                                console.log('totalPrice:'+totalPrice)
+                                console.log('fraction:'+fraction)
+								requestStoreOrdeCheckOut({deskId:this.dialogForm.deskId,discount:this.dialogForm.discount,memberId:this.dialogForm.memberId,remark: this.dialogForm.remark,fraction:fraction,type:this.dialogForm.type,customerId:this.dialogForm.customerId,paymentMethod:this.dialogForm.paymentMethod,
+                                    couponMoney:this.dialogForm.coupon,couponIds:id,
+                                }).then(res => {
 								    if(res.status == 200){
 								        this.$message({
 								            type: 'success',
@@ -923,6 +1044,52 @@
     }
 </script>
 <style lang="scss">
+    .coupon-list{
+        width: 90%;
+        margin: 10px auto;
+        height: 150px;
+        box-shadow: 2px 2px 2px #f1f1f1;
+        border:1px solid #f1f1f1;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        padding: 5px;
+        .coupon-left{
+            width: 30%;
+            height: 150px;
+            float: left;
+            text-align: center;
+            span{
+                display: block;
+            }
+            span:first-child{
+                font-size: 24px;
+                color: #f60;
+                margin-top:40px;
+                margin-bottom: 5px;
+            }
+        }
+        .coupon-center{
+            width: 50%;
+            height: 150px;
+            float: left;
+            h3{
+                color: #000;
+                font-weight: 500;
+                font-size: 18px;
+            }
+        }
+        .coupon-right{
+            width: 20%;
+            height: 150px;
+            float: left;
+            text-align: center;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            padding-top: 60px;
+        }
+    }
     .el-breadcrumb{
         line-height: 4;
         padding-left: 20px;

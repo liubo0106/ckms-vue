@@ -2,14 +2,14 @@
     <section>
         <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>充值规则管理</el-breadcrumb-item>
+            <el-breadcrumb-item>积分规则管理</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="contentBody">
-            <el-form :model="searchForm" ref="ruleForm" class="demo-form-inline">
+            <el-form :model="param" ref="ruleForm" class="demo-form-inline">
                 <el-row :gutter="20">
                     <el-col :span="12">
-                        <el-form-item label-width="80px" label="充值金额" prop="money">
-                            <el-input v-model="searchForm.money" :maxlength="200" autocomplete="off" placeholder="充值金额" clearable></el-input>
+                        <el-form-item label-width="80px" label="积分" prop="money">
+                            <el-input v-model="param.integral" :maxlength="200" autocomplete="off" placeholder="积分" clearable></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="4">
@@ -27,12 +27,18 @@
              element-loading-spinner="el-icon-loading"
              element-loading-background="rgba(241, 242, 247, 0.5)">
             <el-table :data="tableData" style="width: 100%;margin-bottom: 20px;" border row-key="id">
-                <el-table-column align="center" header-align='center' type="index" label="行号" width="80" sortable></el-table-column>
-                <el-table-column align="center" header-align='center' prop="money" label="充值金额" width="140"></el-table-column>
-                <el-table-column align="center" header-align='center' prop="give" label="赠送金额" width="140"></el-table-column>
-                <el-table-column align="center" header-align='center' prop="discount" label="折扣" width="140"></el-table-column>
-                <el-table-column align="center" header-align='center' prop="giveIntegral" label="赠送积分" width="140"></el-table-column>
-                <el-table-column align="center" header-align='center' prop="createTime" label="创建时间" width="180"></el-table-column>
+                <el-table-column align="center" header-align='center' type="index" label="行号" sortable></el-table-column>
+                <el-table-column align="center" header-align='center' prop="integral" label="积分"></el-table-column>
+                <el-table-column align="center" header-align='center' prop="amount" label="金额"></el-table-column>
+                <el-table-column align="center" header-align='center' prop="minUseAmount" label="积分使用区间最小金额"></el-table-column>
+                <el-table-column align="center" header-align='center' prop="maxUseAmount" label="积分使用区间最大金额"></el-table-column>
+                <el-table-column align="center" header-align='center' prop="type" label="规则类型">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.type==1">消费积分</span>
+                        <span v-if="scope.row.type==2">积分抵现</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" header-align='center' prop="createTime" label="创建时间"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="createUser" label="操作员"></el-table-column>
                 <el-table-column align="left" header-align='center' label="操作" width="180">
                     <template slot-scope="scope">
@@ -42,22 +48,25 @@
                 </el-table-column>
             </el-table>
         </div>
-        <el-dialog :title='dialogTitle' :visible.sync="dialogFormVisible" style="width: 656px;left:34%;">
-            <el-form :model="editForm" :rules="rules" ref="editForm">
-                <el-form-item label="充值金额" prop="money" :label-width="formLabelWidth">
-                    <el-input-number v-model="editForm.money" :min="1" :max="99999"></el-input-number>
+        <el-dialog :title='dialogTitle' :visible.sync="dialogFormVisible" width="30%">
+            <el-form :model="editForm"  ref="editForm">
+                <el-form-item label="选择规则" :label-width="formLabelWidth">
+                    <el-select v-model="editForm.type" :disabled="editForm.edit">
+                        <el-option label="消费积分" :value="1"></el-option>
+                        <el-option label="积分抵现" :value="2"></el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="赠送金额" prop="give" :label-width="formLabelWidth">
-                    <el-input-number v-model="editForm.give" :min="0" :max="99999"></el-input-number>
+                <el-form-item label="积分" prop="integral" :label-width="formLabelWidth">
+                   <el-input v-model="editForm.integral" style="width: 217px;"></el-input>
                 </el-form-item>
-                <el-form-item label="折扣" prop="discount" :label-width="formLabelWidth" style="width: 282px">
-                    <el-input-number v-model="editForm.discount"  :min="1" :max="10" :step="1"></el-input-number>
+                <el-form-item label="金额" prop="give" :label-width="formLabelWidth">
+                    <el-input v-model="editForm.amount" style="width: 217px;"></el-input>
                 </el-form-item>
-                <el-form-item label="赠送积分" prop="discount" :label-width="formLabelWidth" style="width: 282px">
-                    <el-input-number v-model="editForm.giveIntegral"  :min="0"  :step="1"></el-input-number>
+                <el-form-item label="积分使用区间最小金额" prop="discount" :label-width="formLabelWidth" v-if="editForm.type==2 || editForm.type=='积分抵现'" >
+                    <el-input v-model="editForm.minUseAmount" style="width: 217px;"></el-input>
                 </el-form-item>
-                <el-form-item label="备注" prop="remark" :label-width="formLabelWidth" style="width: 282px">
-                    <el-input type="textarea" :rows="2" v-model="editForm.remark"  autocomplete="off" clearable :maxlength="200"></el-input>
+                <el-form-item label="积分使用区间最大金额" prop="discount" :label-width="formLabelWidth" v-if="editForm.type==2 || editForm.type=='积分抵现'">
+                    <el-input v-model="editForm.maxUseAmount" style="width: 217px;"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -68,7 +77,7 @@
     </section>
 </template>
 <script type="text/ecmascript-6">
-    import { requestSearchrechargeRule,requestSaverechargeRule, requestrechargeRuleInfo,requestDeleterechargeRule } from '../../api/api';
+    import { requestSearchrechargeRule,requestIntegralrulePage,requestIntegralruleSave,requestDeleteInteg, requestrechargeRuleInfo,requestDeleterechargeRule } from '../../api/api';
     export default {
         data() {
             return {
@@ -78,28 +87,25 @@
                 dialogTitle:'新增',
                 tableData: [],
                 param: {
-
-                    money:'',
+                    pageSize:15,
+                    pageNo:1,
+                    integral:'',
                 },
                 editForm:{
                     id:'',
-                    money:0,
-                    give:0,
-                    discount:0,
-                    remark:'',
-                    giveIntegral:0,
+                    type:'',
+                    integral:'',
+                    amount:'',
+                    minUseAmount:'',
+                    maxUseAmount:'',
+                    edit:false,
                 },
                 searchForm:{
                     money:'',
 
                 },
                 dialogFormVisible: false,
-                formLabelWidth: '80px',
-                rules: {
-                    money: [
-                        { required: true, message: '请输入', trigger: 'blur' },
-                    ],
-                },
+                formLabelWidth: '160px',
             }
         },
         methods: {
@@ -115,7 +121,7 @@
                         let deleteParam ={
                             id: row.id
                         };
-                        requestDeleterechargeRule(deleteParam).then(res => {
+                        requestDeleteInteg(deleteParam).then(res => {
                             this.$message({
                                 type: 'success',
                                 message: '删除成功!',
@@ -142,25 +148,26 @@
             //弹出框show
             showEdit(type,row){
                 if(type == 'add'){
-                    this.doType = 'add';
-                    this.dialogTitle = '新增';
-                    this.editForm.id = '';
-                    this.editForm.money = '';
-                    this.editForm.give = '';
-                    this.editForm.discount = '';
-                    this.editForm.remark = '';
-                    this.editForm.giveIntegral=0;
-
+                    this.editForm.type='';
+                    this.editForm.edit=false;
+                    this.editForm.integral = '';
+                    this.editForm.amount = '';
+                    this.editForm.minUseAmount = '';
+                    this.editForm.maxUseAmount = '';
                 }else if(type == 'edit'){
                     this.doType = 'edit';
                     this.dialogTitle = '编辑';
                     this.editForm.id = row.id;
-                    this.editForm.money = row.money;
-                    this.editForm.give = row.give;
-                    this.editForm.discount = row.discount;
-                    this.editForm.remark = row.remark;
-                    this.editForm.giveIntegral=row.giveIntegral;
-
+                    if(row.type==2){
+                        this.editForm.type='积分抵现'
+                    }else{
+                        this.editForm.type='消费积分'
+                    }
+                    this.editForm.edit=true;
+                    this.editForm.integral = row.integral;
+                    this.editForm.amount = row.amount;
+                    this.editForm.minUseAmount = row.minUseAmount;
+                    this.editForm.maxUseAmount = row.maxUseAmount;
                 }
                 this.dialogFormVisible = true;
 
@@ -168,18 +175,16 @@
             //新增分类
             dialogFormAdd(formName){
                 let _this = this;
-                let addParam ={
-                    id:  this.editForm.id,
-                    money:  this.editForm.money,
-                    give:  this.editForm.give,
-                    discount:  this.editForm.discount/10,
-                    remark: this.editForm.remark,
-                    giveIntegral:this.editForm.giveIntegral,
-                };
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         _this.saveLoading = true;
-                        requestSaverechargeRule(addParam).then(res => {
+                        if(this.editForm.type=='积分抵现'){
+                            this.editForm.type=2;
+                        }
+                        if(this.editForm.type=='消费积分'){
+                            this.editForm.type=1;
+                        }
+                        requestIntegralruleSave(this.editForm).then(res => {
                             if(res.status==400){
                                 this.$message({
                                     type:'error',
@@ -206,12 +211,11 @@
                 });
             },
             onSearch() {
-                this.param.money = this.searchForm.money;
                 this.getAjaxList();
             },
             getAjaxList(){
                 let _this = this;
-                requestSearchrechargeRule(_this.param).then(res => {
+                requestIntegralrulePage(_this.param).then(res => {
                     let data = res.data.items;
                     if (res.status == 200) {
                         if(data && data.length>0){
@@ -243,9 +247,9 @@
         margin: 20px;
         background-color: #ffffff;
         padding: 20px;
-    .el-pagination{
-        padding-top: 10px;
-    }
+        .el-pagination{
+            padding-top: 10px;
+        }
     }
     .min-width-select{
         width: 110px;

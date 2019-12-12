@@ -36,7 +36,8 @@
                 <el-table-column align="center" header-align='center' prop="discount" label="折扣" width="110"></el-table-column>
                 <!--<el-table-column align="center" header-align='center' prop="level" label="等级" width="110"></el-table-column>-->
                 <el-table-column align="center" header-align='center' prop="customerName" label="门店" ></el-table-column>
-                <el-table-column align="center" header-align='center' prop="wechat" label="微信号" width="140"></el-table-column>>
+                <el-table-column align="center" header-align='center' prop="wechat" label="微信号" width="140"></el-table-column>
+                <el-table-column align="center" header-align='center' prop="integral" label="可用积分" width="140"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="statusName" label="状态" width="70"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="createUser" label="操作员" width="70"></el-table-column>
                 <el-table-column align="left" header-align='center' label="操作" width="265">

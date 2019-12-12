@@ -104,11 +104,11 @@
                         </el-aside>
                         <el-main>
                             <el-form :inline="true" :model="searchTreeForm2" label-width="80px" class="demo-form-inline">
-                                <el-form-item label="原料编号" style="font-family:MicrosoftYaHeiLight;font-weight:bold;color:rgba(102,102,102,1);">
-                                    <el-input v-model="searchTreeForm2.serialNo " :maxlength="200" autocomplete="off" placeholder="原料编号" clearable></el-input>
+                                <el-form-item label="打包编号" style="font-family:MicrosoftYaHeiLight;font-weight:bold;color:rgba(102,102,102,1);">
+                                    <el-input v-model="searchTreeForm2.serialNo " :maxlength="200" autocomplete="off" placeholder="打包编号" clearable></el-input>
                                 </el-form-item>
-                                <el-form-item label="原料名称" style="font-family:MicrosoftYaHeiLight;font-weight:bold;color:rgba(102,102,102,1);">
-                                    <el-input v-model="searchTreeForm2.name" :maxlength="200" autocomplete="off" placeholder="原料名称" clearable></el-input>
+                                <el-form-item label="打包名称" style="font-family:MicrosoftYaHeiLight;font-weight:bold;color:rgba(102,102,102,1);">
+                                    <el-input v-model="searchTreeForm2.name" :maxlength="200" autocomplete="off" placeholder="打包名称" clearable></el-input>
                                 </el-form-item>
                                 <el-form-item label-width="0">
                                     <el-button icon="el-icon-search" circle @click.native.prevent="onSearchTree2" native-type="submit"></el-button>
@@ -116,8 +116,8 @@
                             </el-form>
                             <el-table :data="tableTreeData2" border>
                                 <el-table-column align="center" header-align='center' type="index" label="行号" width="80"></el-table-column>
-                                <el-table-column align="center" header-align='center' prop="serialNo" label="原料编号" width="120"></el-table-column>
-                                <el-table-column align="center" header-align='center' prop="name" label="原料名称" ></el-table-column>
+                                <el-table-column align="center" header-align='center' prop="serialNo" label="打包编号" width="120"></el-table-column>
+                                <el-table-column align="center" header-align='center' prop="name" label="打包名称" ></el-table-column>
                                 <el-table-column align="center" header-align='center' prop="costPrice" label="出售单价" width="100">
                                     <template slot-scope="scope">
                                         ￥{{scope.row.costPrice | substr}}

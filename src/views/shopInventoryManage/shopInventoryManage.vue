@@ -7,7 +7,7 @@
         <div class="contentBody">
             <el-form :inline="true" :model="searchForm" label-width="80px" class="demo-form-inline" label-position="left">
                 <el-row :gutter="20">
-                    <el-col :span="20">
+                    <el-col :span="24">
                         <el-form-item label="商品名称">
                             <el-input v-model="searchForm.name" :maxlength="200" autocomplete="off" placeholder="请输入" clearable></el-input>
                         </el-form-item>
@@ -18,9 +18,19 @@
                                 <el-option label="已下架" value="0"></el-option>
                             </el-select>
                         </el-form-item>
+                        <el-form-item label="菜品分类">
+                            <el-select  v-model="searchForm.categoryId" placeholder="请选择" >
+                                <el-option  v-for="item in categoryList" :label="item.name"  :value="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="菜品种类">
+                                <el-select  v-model="searchForm.kind" placeholder="请选择">
+                                    <el-option  v-for="item in kindList" :label="item.name"  :value="item.value"></el-option>
+                                </el-select>
+                        </el-form-item>
                         <el-form-item label-width="0">
                             <el-button icon="el-icon-search" circle @click.native.prevent="onSearch" native-type="submit"></el-button>
-                            <!--<el-button icon="el-icon-plus" circle @click="handleClick('', '', 'add')"></el-button>-->
+                            <el-button icon="el-icon-refresh-right" circle @click="reset"></el-button>
                         </el-form-item>
                     </el-col>
                     <!--<el-col :span="4">-->
@@ -57,7 +67,7 @@
     </section>
 </template>
 <script type="text/ecmascript-6">
-    import { requestSearchGoods, requestDeleteGoods,requestStatusIn} from '../../api/api';
+    import { requestSearchGoods, requestDeleteGoods,requestStatusIn,requestMenuListByInPid} from '../../api/api';
     export default {
         name: 'user-manage',
         data() {
@@ -67,7 +77,14 @@
                 searchForm: {
                     name: '',
                     isSale:'',
+                    kind:'',
+                    categoryId:'',
                 },
+                param3: {
+                    pid:"0",
+                },
+                categoryList:[],
+                kindList:[{name:'炒锅涮锅',value:1},{name:'烧烤',value:2},{name:'凉菜',value:3},{name:'其他',value:0}],
                 tableData: null,
                 param: {
                     pageNo:1,
@@ -77,13 +94,42 @@
                     customerId:customerId,//门店ID
                     type:1,
                     isDelete:1,
+                    kind:'',
+                    categoryId:'',
                 },
                 totalNum:0
             }
         },
+        created(){
+            this.getAjaxCategory();
+        },
         methods: {
             indexMethod(index) {
                 return (this.param.pageNo - 1) * this.param.pageSize + index + 1;
+            },
+            reset(){
+                this.searchForm.name = '';
+                this.searchForm.isSale = '';
+                this.searchForm.kind='';
+                this.searchForm.categoryId='';
+                this.param.name = '';
+                this.param.isSale = '';
+                this.param.kind='';
+                this.param.categoryId='';
+                this.getAjaxList();
+            },
+            getAjaxCategory(){
+                let _this = this;
+                requestMenuListByInPid(_this.param3).then(res => {
+                    if (res.status == 200) {
+                        let data = res.data;
+                        if(data && data.length>0){
+                            _this.categoryList = data;
+                        }else{
+                            _this.categoryList = [];
+                        }
+                    }
+                });
             },
             handleSizeChange(val){
                 let _this = this;
@@ -139,6 +185,8 @@
                 this.param.pageNo =1;
                 this.param.name = this.searchForm.name;
                 this.param.isSale = this.searchForm.isSale;
+                this.param.kind=this.searchForm.kind;
+                this.param.categoryId=this.searchForm.categoryId;
                 this.getAjaxList();
             },
             handleCurrentChange(val) {

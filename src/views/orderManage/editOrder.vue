@@ -50,10 +50,10 @@
         <el-dialog :title='dialogTreeTitle2' :visible.sync="dialogTreeFormVisible2" width="80%" top="5vh">
             <el-container>
              <el-main>
-             <el-form :model="editForm" ref="editForm" label-width="100px" class="demo-ruleForm" v-if="type==0">
+             <el-form :model="editForm" ref="editForm"  label-width="40px" class="demo-ruleForm" v-if="type==0" label-position="left">
                  <el-row :gutter="20">
                      <el-col :span="20">
-                         <el-form-item label="搜索">
+                         <el-form-item label="搜索" >
                              <el-input v-model="searchForm.name" :maxlength="200" autocomplete="off" placeholder="名称" clearable></el-input>
                          </el-form-item>
                      </el-col>
@@ -83,13 +83,17 @@
                     <el-container>
                         <el-aside style="width:150px">
                             <el-tree :data="data" :props="defaultProps" @node-click="handleNodeClick" :default-expand-all="true"></el-tree>
+                            <el-tree default-expand-all :data="orgTreeData" :props="defaultProps" @node-click="handleNodeClick" >
+                                <span class="custom-tree-node" slot-scope="{ node, data }">
+                                    <span>{{ data.name }}</span>
+                                </span>
+                            </el-tree>
                         </el-aside>
                         <el-main>
                             <el-form :model="editForm" ref="editForm" label-width="100px" class="demo-ruleForm">
                                 <el-form-item label="" label-width="0px">
-                                    <el-table :data="goodsList" stripe height="400" v-loading="goodsLoading" element-loading-text="数据加载中"
-                                              element-loading-spinner="el-icon-loading"
-                                    >
+                                    <el-table :data="goodsList" border stripe  v-loading="goodsLoading" >
+                                        <el-table-column label="序号" type="index" :index="indexMethod" align="center" header-align="center"></el-table-column>
                                         <el-table-column label="名称" prop="name" align="center" header-align='center'></el-table-column>
                                         <el-table-column label="库存量" prop="stock" align="center" header-align='center' width="80px"></el-table-column>
                                         <el-table-column label="数量" prop="number" align="center" header-align='center'>
@@ -124,19 +128,18 @@
                                             </template>
                                         </el-table-column>
                                     </el-table>
+                                    <div style="margin-top: 10px">
+                                    <el-pagination
+                                            @size-change="handleSizeChangeGoods"
+                                            @current-change="handleCurrentChangeGoods"
+                                            :current-page="param.pageNo"
+                                            :page-sizes="[10, 20, 30, 40]"
+                                            :page-size="param.pageSize"
+                                            layout="total, sizes, prev, pager, next, jumper"
+                                            :total="totalNum">
+                                    </el-pagination>
+                                    </div>
                                 </el-form-item>
-                                <!--<el-form-item style="text-align: right">
-                                    <el-row style="text-align: right;margin-bottom: 2%">
-                                        <el-form-item label="备注:" >
-                                            <el-input  v-model="editForm.remark"></el-input>
-                                        </el-form-item>
-                                    </el-row>
-                                    <el-row style="text-align: right">
-                                        用餐人数:  <el-input-number v-model="editForm.people" :min="1"></el-input-number>
-                                        <el-button type="primary" @click="showDetailDialog('editForm')">确认下单</el-button>
-                                        <el-button type="primary" @click="goBack()">返回</el-button>
-                                    </el-row>
-                                </el-form-item>-->
                             </el-form>
                         </el-main>
                     </el-container>
@@ -160,13 +163,6 @@
                                         <el-input-number style="width:130px" v-model="restaurantData[scope.$index].price" :min="0"  disabled></el-input-number>
                                     </el-form-item>
                                 </el-table-column>
-                                <!--<el-table-column label="口味" prop="flavor" align="center" header-align='center' width="180px">
-                                    <el-form-item slot-scope="scope">
-                                        <el-select v-model="goodsList[scope.$index].flavor" placeholder="请选择" clearable  @change="handleClickTaste()" style="width: 150px" :disabled="scope.row.isSale ==0 || scope.row.stock == 0">
-                                            <el-option :label="f.name" :value="f.name"  v-for='f in flavorList'></el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                </el-table-column>-->
                                 <el-table-column label="套餐备注" prop="remark" align="center" header-align='center'>
                                     <el-form-item slot-scope="scope">
                                         <el-input v-model="restaurantData[scope.$index].remark"></el-input>
@@ -180,18 +176,6 @@
                                 </el-table-column>
                             </el-table>
                         </el-form-item>
-                        <!--<el-form-item style="text-align: right">
-                            <el-row style="text-align: right;margin-bottom: 2%">
-                                <el-form-item label="备注:" >
-                                    <el-input  v-model="editForm.remark"></el-input>
-                                </el-form-item>
-                            </el-row>
-                            <el-row style="text-align: right">
-                                用餐人数:  <el-input-number v-model="editForm.people" :min="1"></el-input-number>
-                                <el-button type="primary" @click="showDetailDialog('editForm')">确认下单</el-button>
-                                <el-button type="primary" @click="goBack()">返回</el-button>
-                            </el-row>
-                        </el-form-item>-->
                     </el-form>
                 </el-tab-pane>
             </el-tabs>
@@ -321,7 +305,7 @@
             </el-table>
         </el-dialog>
         <!--套餐口味选择层-->
-        <!-- <el-dialog title="选择口味" :visible.sync="dialogTableVisibleData2" >
+         <el-dialog title="选择口味" :visible.sync="dialogTableVisibleData2" >
             <el-table :data="tableDataDetailFlover">
                 <el-table-column type="index" label="序号" width="150" align="center" header-align='center'></el-table-column>
                 <el-table-column  label="菜品名称" prop="name" width="200" align="center" header-align='center'></el-table-column>
@@ -345,7 +329,7 @@
                     <el-button plain @click="dialogClose">取消</el-button>
                     <el-button type="primary" @click="endData">确认</el-button>
                 </div>
-        </el-dialog> -->
+        </el-dialog>
     </section>
 </template>
 <script type="text/ecmascript-6">
@@ -364,6 +348,7 @@
         requestRestaurantDetail,
         requestRestaurantSearchDosing,
         requestTreeList,
+        requestSearchMenuType,
         requestRestaurantFlavor,
     } from '../../api/api';
 
@@ -384,6 +369,7 @@
                 isManager:'',//门店店长
                 loading: false,
                 name:'',
+                totalNum:0,
                 formLabelWidth: '100px',
                 dialogOrderVisible:false,
                 dialogTableVisibleData2:false,
@@ -391,11 +377,14 @@
                 param: {
                     customerId:sessionStorage.getItem('customerId'),//门店ID
                     pageNo:1,
-                    pageSize:0,
+                    pageSize:10,
                     isSide:0,
                     isDelete:1,
-
+                    name:'',
+                    categoryId:'',
+                    kind:'',
                 },
+                orgTreeData: [],
                 saveLoading: false,
                 editForm: {
                     customerId:sessionStorage.getItem('customerId'),//门店ID
@@ -494,15 +483,34 @@
 
                 }
             },
+            getTreeAjaxList(){
+                let _this = this;
+                requestSearchMenuType({}).then(res => {
+                    if(res.status == 200){
+                        let data = res.data;
+                        if (data) {
+                            if(data && data.length>0){
+                                _this.orgTreeData = data;
+                            }else{
+                                _this.orgTreeData = [];
+                            }
+                        }
+                    }else{
+                        _this.$message({
+                            type: 'error',
+                            message: '系统异常!'
+                        });
+                    }
+                });
+            },
+            indexMethod(index) {
+                return (this.param.pageNo - 1) * this.param.pageSize + index + 1;
+            },
             handleNodeClick(val){
-                const kind=val.kind;
-                const arr=[]
-                for(let i=0;i<this.oldGoodsListData.length;i++){
-                    if(this.oldGoodsListData[i].kind==kind){
-                        arr.push(this.oldGoodsListData[i]);
-                   }
-                }
-                this.goodsList=arr;
+                console.log(val);
+                this.param.kind=val.kind;
+                this.param.categoryId=val.id;
+                this.getAjaxGoodsList();
             },
             diners(val){
 
@@ -533,24 +541,8 @@
             },
             onSearch(type) {
                 if(type==0){
-                    this.searchForm.name=this.searchForm.name.toLowerCase()
-                    if(this.searchForm.name=='' && this.oldGoodsList.length > 0){
-                        this.goodsList = this.oldGoodsList;
-                    }else{
-                        if(this.oldGoodsList.length == 0){
-                            this.oldGoodsList = this.goodsList;
-                        }
-                        //搜索
-                        let fn={};
-                        fn= this.oldGoodsList.filter(data => {
-
-                            return Object.keys(data).some(key => {
-
-                                return String(data[key]).toLowerCase().indexOf(this.searchForm.name) > -1
-                            })
-                        })
-                        this.goodsList=fn
-                    }
+                    this.param.name=this.searchForm.name;
+                    this.getAjaxGoodsList();
                 }else{
                     this.searchForm.name=this.searchForm.name.toLowerCase()
                     if(this.searchForm.name=='' && this.oldrestaurantData.length > 0){
@@ -642,6 +634,7 @@
                     if(this.goodsList.length==0){
                         this.getAjaxGoodsList();
                         this.getRestaurant();
+                        this.getTreeAjaxList();
                     }
                 }else if(doType == 'delete'){
                     this.$confirm('真的删除该行数据么, 是否继续?', '提示', {
@@ -844,7 +837,7 @@
                 }
                 this.orderDetailList.push( this.tasteDetail);
                 this.dialogTableVisibleData2=false;
-                
+
             },
             //添加事件
             handleClickTree(index,row,type){
@@ -869,17 +862,17 @@
                         })
                         return false;
                     }
-					this.orderDetailList.push( this.tasteDetail);
-                    //this.dialogTableVisibleData2=true;
-                    // requestRestaurantFlavor({setMealId:row.id}).then((res)=>{
-                    //     if(res.status==200){
-                    //         this.tableDataDetailFlover=res.data;
-                    //         this.tableDataDetailFlover.forEach((item)=>{
-                    //             this.$set(item,'flavor','');
-                    //         })
-                    //     }
-                    //     console.log(this.tableDataDetailFlover);
-                    // })
+					// this.orderDetailList.push( this.tasteDetail);
+                    this.dialogTableVisibleData2=true;
+                    requestRestaurantFlavor({setMealId:row.id}).then((res)=>{
+                        if(res.status==200){
+                            this.tableDataDetailFlover=res.data;
+                            this.tableDataDetailFlover.forEach((item)=>{
+                                this.$set(item,'flavor','');
+                            })
+                        }
+                        console.log(this.tableDataDetailFlover);
+                    })
 
                 }else{
                     if(this.goodsList[index].number > 0){
@@ -992,6 +985,14 @@
                 });
                 return sums;
             },
+            handleSizeChangeGoods(val){
+              this.param.pageSize=val;
+              this.getAjaxGoodsList();
+            },
+            handleCurrentChangeGoods(val){
+                this.param.pageNo=val;
+                this.getAjaxGoodsList();
+            },
             getAjaxGoodsList(){
                 let _this = this;
                 requestSearchGoods(_this.param).then(res => {
@@ -1000,6 +1001,7 @@
                         if (data && data.length>0) {
                             this.goodsList = data;
                             this.oldGoodsListData=data;
+                            this.totalNum=parseInt(res.data.totalNum);
                         }
                         this.goodsLoading=false;
                     }else{

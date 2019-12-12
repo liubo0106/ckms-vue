@@ -638,7 +638,10 @@ export const requestRestaurantDeleteDosing = params => { return httpRequest('get
 export const requestBugetData = params =>{return httpRequest('post','/server/storeOrder/printBillAll',params,'json')};
 //套餐列表下架上架
 
-export const requestRestaurantGoodsStatus = params => { return httpRequest('get','server/setMeal/status',params,'')};
+export const requestRestaurantGoodsStatus = params => { return httpRequest('get','server/setMeal/isSale',params,'')};
+
+
+export const requestRestaurantGoodsStatusOk = params => { return httpRequest('get','server/setMeal/status',params,'')};
 
 //套餐列表删除
 export const requestRestaurantDeleteGoods = params => { return httpRequest('get','server/setMeal/delete',params,'')};
@@ -668,23 +671,20 @@ export const requestCheckOrder=params=>{return httpRequest('get','weiXin/checkSt
 //下单套餐口味选择
 export const requestRestaurantFlavor=params=>{return httpRequest('post','server/setMealDetail/listWithFlavor',params,'')}
 
-// //删除
-// export const requestDeleteGoods = params => { return httpRequest('get','server/storeGoods/delete',params,'')};
-//
-// //查询详情
-// export const requestGoodsInfo = params => { return httpRequest('get','server/storeGoods/info',params,'')};
-// //查询商品信息是否重复
-// export const requestGoodsInfoPid = params => { return httpRequest('get','server/storeGoods/checkExist',params,'')};
-// //状态
-// export const requestGoodsStatus = params => { return httpRequest('get','server/storeGoods/status',params,'')};
-// /*
-// 门店商品配料
-// * */
-// //查询列表
-// export const requestSearchDosing = params => { return httpRequest('post','server/storeGoodsDetail/page',params,'json')};
-// //添加
-// export const requestSaveDosing= params => { return httpRequest('post','server/storeGoodsDetail/save',params,'json')};
-// //删除
-// export const requestDeleteDosing = params => { return httpRequest('get','server/storeGoodsDetail/delete',params,'')};
-//
-// /*
+//进销管理
+export const requestStoreSales=params=>{return httpRequest('post','server/purchaseSaleStock/generate',params,'json')}
+export const requestStoreSalesPage=params=>{return httpRequest('post','server/purchaseSaleStock/page',params,'json')}
+//优惠卷管理
+export const requestCouponSave=params=>{return httpRequest('post','server/coupon/addjob',params,'json')};
+export const requestCouponedit=params=>{return httpRequest('post','server/coupon/modifyCoupon',params,'json')};
+export const requestCouponList=params=>{return httpRequest('post','server/coupon/selectAll',params,'json')}
+export const requestCouponDelete=params=>{return httpRequest('post','server/coupon/deletejob',params,'json')}
+export const requestCouponOff=params=>{return httpRequest('post','server/coupon/pausejob',params,'json')}
+export const requestCouponOn=params=>{return httpRequest('post','server/coupon/resumejob',params,'json')}
+export const requestCouponInfo=params=>{return httpRequest('get','server/coupon/searchCouponsBasedOnMemberId',params,'')}
+
+
+//积分规则
+export const requestIntegralruleSave=params=>{return httpRequest('post','server/integralRules/save',params,'json')}
+export const requestIntegralrulePage=params=>{return httpRequest('post','server/integralRules/page',params,'json')}
+export const requestDeleteInteg=params=>{return httpRequest('post','server/integralRules/delete',params,'')}

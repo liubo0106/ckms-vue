@@ -96,6 +96,11 @@ const priceCurveDetail = ()=>import('./views/commodityManage/priceCurveDetail.vu
 const recombination= ()=>import('./views/recombination/recombination.vue')//商品重组
 const editrecombination=()=>import('./views/recombination/editrecombination.vue')//商品重组编辑添加
 const storeList = ()=>import('./views/storeOrder/storeList.vue')//顾客订单详情
+const storeSales=()=>import('./views/storeSales/storeSales')// 进销库存管理
+const coupon=()=>import('./views/coupon/coupon');//优惠卷管理
+const addcoupon=()=>import('./views/coupon/addcoupon');//添加优惠卷
+const editcoupon=()=>import('./views/coupon/editcoupon');//修改优惠卷
+const integralrule=()=>import('./views/integralrule/integralrule');//积分充值规则管理
 let routes = [
     {
         path: '/login',
@@ -207,6 +212,11 @@ let routes = [
             {path:'/recombination',component:recombination,name:'商品重组'},
             {path:'/editrecombination',component:editrecombination,name:'编辑重组商品'},
             {path:'/storeList',component:storeList,name:'顾客订单详情'},
+            {path:'/storeSales',component:storeSales,name:'进销库存管理'},
+            {path:'/coupon',component:coupon,name:'优惠卷管理'},
+            {path:'/addcoupon',component:addcoupon,name:'添加优惠卷'},
+            {path:'/editcoupon',component:editcoupon,name:'修改优惠卷'},
+            {path:'/integralrule',component:integralrule,name:'积分规则'},
         ]
     },
     {

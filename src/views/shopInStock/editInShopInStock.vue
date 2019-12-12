@@ -48,7 +48,7 @@
                 </el-row>
                 <el-row>
                     <el-col :span="8">
-                        <el-form-item  label="是否上架">
+                        <el-form-item  label="是否上架" prop="isSale">
                             <template>
                                 <el-radio v-model="editForm.isSale" label="1">是</el-radio>
                                 <el-radio v-model="editForm.isSale" label="0">否</el-radio>
@@ -56,7 +56,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
-                        <el-form-item  label="是否配料">
+                        <el-form-item  label="是否配料" prop="isSide">
                             <template>
                                 <el-radio v-model="editForm.isSide" label="1">是</el-radio>
                                 <el-radio v-model="editForm.isSide" label="0">否</el-radio>
@@ -66,7 +66,7 @@
                 </el-row>
                 <el-row>
                     <el-col :span="8">
-                        <el-form-item  label="是否打折">
+                        <el-form-item  label="是否打折" prop="isDiscount">
                             <template>
                                 <el-radio v-model="editForm.isDiscount" :label="0">是</el-radio>
                                 <el-radio v-model="editForm.isDiscount" :label="1">否</el-radio>
@@ -74,7 +74,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
-                        <el-form-item label="价格" >
+                        <el-form-item label="价格" prop="price">
                             <el-input-number v-model="editForm.price" :min="0" :max="999999999" style="width: 216px;"></el-input-number>
                         </el-form-item>
                     </el-col>
@@ -406,11 +406,24 @@
                         { validator: validateUserName, trigger: 'blur' }
                     ],
                     kind:[
-                        { required: true, message: '请选择菜品种类', trigger: 'blur' },
+                        { required: true, message: '请选择菜品种类', trigger: 'change' },
                     ],
                     nature:[
-                        {required: true, message: '请选择菜品性质', trigger: 'blur'}
+                        {required: true, message: '请选择菜品性质', trigger: 'change'}
+                    ],
+                    isSale:[
+                        {required:true,message:'请选择是否上下架', trigger:'change'}
+                    ],
+                    isSide:[
+                        {required:true,message:'请选择是否配料',trigger:'change'}
+                    ],
+                    isDiscount:[
+                        {required:true,message:'请选择是否打折',trigger:'change'}
+                    ],
+                    price:[
+                        {required:true,message:'请输入价格',trigger:'blur'}
                     ]
+
                 },
                 //上传图片
                 imageUrl: '',
@@ -485,8 +498,9 @@
                     pageNo:1,
                     pageSize:10,
                     name:'',
-                    isSale:'',
+                    isSale:1,
                     isSide:'1',
+                    isDelete:1,
                     customerId:customerId,//门店ID
                 },
                 tableTreeData4:{
@@ -961,6 +975,14 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         _this.saveLoading = true;
+                        if(this.editForm.price==0){
+                            this.$message({
+                                type:'error',
+                                message:'菜品价格不能为0'
+                            })
+                            _this.saveLoading = false;
+                            return  false;
+                        }
                         let editFormParam ={
                             id:_this.id,
                             num: _this.editForm.num,
@@ -980,6 +1002,7 @@
                             kind: _this.editForm.kind,
                             nature:_this.editForm.nature,
                         };
+
                         requestSaveGoods(editFormParam).then(res => {
                             console.log(res)
 

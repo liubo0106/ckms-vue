@@ -53,7 +53,9 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="9">
-
+                        <el-form-item label="赠送积分" prop="give">
+                            <el-input-number size="medium" :precision="2"  v-model="editForm.giveIntegral" :min="0" :max="999999999"  style="width:218px" disabled></el-input-number>
+                        </el-form-item>
                     </el-col>
                 </el-row>
                 <!--<el-row>
@@ -91,6 +93,7 @@
                     <el-table-column align="center" header-align='center' type="index" label="序号" width="80"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="money" label="充值金额"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="give" label="赠送金额"></el-table-column>
+                    <el-table-column align="center" header-align='center' prop="giveIntegral" label="赠送积分"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="discount" label="享受折扣" width="140"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="customerName" label="充值门店名称" width="140"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="statusName" label="状态" width="140"></el-table-column>
@@ -149,6 +152,7 @@
                     customerName: customerName,
                     customerName:'',
                     remark: '',
+                    giveIntegral:'',
                 },
                 checkAll: false,
                 rules: {
@@ -277,6 +281,7 @@
                     let data = res.data.items;
                     if(data && data.length>0){
                         _this.moneyList = data;
+                        this.editForm.giveIntegral=data[0].giveIntegral;
                     }else{
                         _this.moneyList = [];
                     }
@@ -397,6 +402,7 @@
                             customerId: _this.editForm.customerId,
                             customerName: tn.name,
                             remark: _this.editForm.remark,
+                            giveIntegral:_this.editForm.giveIntegral,
                         };
                         requestSaveMemberRecharge(editFormParam).then(res => {
                             this.$message({

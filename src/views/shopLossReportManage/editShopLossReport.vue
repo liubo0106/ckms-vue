@@ -11,13 +11,19 @@
                     <el-form-item label="报损单名称" prop="name">
                         <el-input placeholder='请输入' v-model="editForm.name" :maxlength="15"></el-input>
                     </el-form-item>
-
                     <el-form-item label="报损日期" style="width: 316px" prop="dateTime">
                         <el-date-picker type="date" placeholder="选择日期" v-model="editForm.dateTime"  value-format="yyyy-MM-dd"></el-date-picker>
                     </el-form-item>
-
                     <el-form-item label="总量"  label-width="80px" style="width: 316px">
                         <el-input placeholder='请输入' v-model="editForm.totalNumber" :maxlength="200" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="报损类型"  label-width="80px" style="width: 316px">
+                        <el-select v-model="editForm.lossType">
+                            <el-option label="物品损坏" value="1"></el-option>
+                            <el-option label="物品遗失" value="2"></el-option>
+                            <el-option label="员工餐使用" value="3"></el-option>
+                            <el-option label="库存错误" value="4"></el-option>
+                        </el-select>
                     </el-form-item>
                 </div>
                 <el-form-item label="备注">
@@ -171,7 +177,8 @@
                     totalNumber: '',
                     totalPrice: '',
                     remark: '',
-                    customerId:''
+                    customerId:'',
+                    lossType:'',
                 },
                 //表单校验
                 rules: {
@@ -387,6 +394,7 @@
                             _this.editForm.totalNumber = data.totalNumber;
                             _this.editForm.totalPrice = data.totalPrice;
                             _this.editForm.remark = data.remark;
+                            _this.editForm.lossType = data.lossType;
                         }
                     }else{
                         this.$message({
@@ -410,7 +418,8 @@
                             dateTime: _this.editForm.dateTime,
                             totalNumber: _this.editForm.totalNumber,
                             totalPrice : _this.editForm.totalPrice,
-                            remark : _this.editForm.remark
+                            remark : _this.editForm.remark,
+                            lossType:_this.editForm.lossType
                         };
                         requestSaveDestroy(editFormParam).then(res => {
                             this.$message({

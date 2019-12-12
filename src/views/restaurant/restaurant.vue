@@ -56,12 +56,13 @@
                 </el-table-column>
                 <el-table-column align="center" header-align='center' prop="num" label="排序号" width="140"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="createUser" label="操作员" width="120"></el-table-column>
-                <el-table-column align="left" header-align='center' label="操作" width="340">
+                <el-table-column align="left" header-align='center' label="操作" width="380">
                     <template slot-scope="scope">
                         <el-button icon="el-icon-upload2" style="background-color: #4395fb;color: #fff;border: none;" v-if='scope.row.isSale == 1' type="isSale" size="small" @click="handleClick(scope.$index, scope.row, 'isClose')">下架</el-button>
                         <el-button icon="el-icon-download" style="background-color: #847ffe;color: #fff;border: none;" v-if='scope.row.isSale == 0' size="small" @click="handleClick(scope.$index, scope.row, 'isSale')">上架</el-button>
-                        <el-button style="background-color: #24cbc1;color: #fff;border: none;" icon="el-icon-edit" type="primary" size="mini" @click="handleClick(scope.$index, scope.row, 'edit')">编辑</el-button>
+                        <el-button style="background-color: #24cbc1;color: #fff;border: none;" icon="el-icon-edit" type="primary" size="mini" v-if='scope.row.status != 1' @click="handleClick(scope.$index, scope.row, 'edit')">编辑</el-button>
                         <el-button style="background-color: #fe8d29;color: #fff;border: none;" icon="el-icon-delete" size="mini" type="danger" @click="handleClick(scope.$index, scope.row, 'delete')">删除</el-button>
+                        <el-button style="background-color: #fe8d29;color: #fff;border: none;" icon="el-icon-delete" v-if='scope.row.status != 1'  size="mini" type="danger" @click="handleClick(scope.$index, scope.row, 'ok')">确定</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -78,7 +79,7 @@
     </section>
 </template>
 <script type="text/ecmascript-6">
-    import {requestDeleteGoods, requestGoodsStatus, requestSearchGoods,requestRestaurantDetail,requestRestaurantGoodsStatus,requestRestaurantDeleteGoods} from '../../api/api';
+    import {requestDeleteGoods,requestRestaurantGoodsStatusOk, requestGoodsStatus, requestSearchGoods,requestRestaurantDetail,requestRestaurantGoodsStatus,requestRestaurantDeleteGoods} from '../../api/api';
 
     export default {
         name: 'user-manage',
@@ -164,7 +165,7 @@
                         this.loading=true;
                         let deleteParam ={
                             id: row.id,
-                            status:1
+                            isSale:1
                         };
                         requestRestaurantGoodsStatus(deleteParam).then(res => {
                             this.$message({
@@ -193,7 +194,7 @@
                         this.loading=true;
                         let deleteParam ={
                             id: row.id,
-                            status:0
+                            isSale:0
                         };
                         requestRestaurantGoodsStatus(deleteParam).then(res => {
                             this.$message({
@@ -213,6 +214,20 @@
                             message: '已取消'
                         });
                     });
+                }else if(doType=='ok'){
+                    let Param ={
+                        id: row.id,
+                        status:1
+                    };
+                    requestRestaurantGoodsStatusOk(Param).then((res)=>{
+                        if(res.status==200){
+                            this.$message({
+                                type:'success',
+                                message:'操作成功',
+                            })
+                            this.getAjaxList();
+                        }
+                    })
                 }
             },
             onSearch() {

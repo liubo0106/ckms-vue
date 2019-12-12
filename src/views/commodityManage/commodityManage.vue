@@ -52,6 +52,7 @@
                                 <span>{{scope.row.costPrice | substr}}</span>
                             </template>
                         </el-table-column>
+                        <el-table-column align="center" header-align='center' prop="spec" label="规格" ></el-table-column>
                         <el-table-column align="center" header-align='center' prop="stock" label="库存量" width="80"></el-table-column>
                         <el-table-column align="center" header-align='center' prop="safeStock" label="安全库存量" width="80"></el-table-column>
                         <el-table-column align="center" header-align='center' prop="isDeleteName" label="是否启用" width="120">
