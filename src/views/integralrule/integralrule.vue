@@ -154,6 +154,7 @@
                     this.editForm.amount = '';
                     this.editForm.minUseAmount = '';
                     this.editForm.maxUseAmount = '';
+                    this.editForm.id='';
                 }else if(type == 'edit'){
                     this.doType = 'edit';
                     this.dialogTitle = '编辑';
@@ -175,6 +176,7 @@
             //新增分类
             dialogFormAdd(formName){
                 let _this = this;
+
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         _this.saveLoading = true;

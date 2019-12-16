@@ -67,7 +67,7 @@ module.exports = {
   // 本地环境接口地址
   dev: {
    API_PATH: '"https://www.89shi.cn/ckmsdev/"'
-    //API_PATH: '"http://192.168.0.131:8083/ckmsdev/"'
+   // API_PATH: '"http://192.168.0.130:8083/ckmsdev/"'
   },
   // 测试环境接口地址
   test: {
@@ -75,6 +75,6 @@ module.exports = {
   },
   // 生产环境接口地址
   pro: {
-    API_PATH: '"https://www.89shi.cn/ckmsadmin/"',
+    API_PATH: '"https://www.89shi.cn/ckms/"',
   }
 }

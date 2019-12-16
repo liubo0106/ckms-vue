@@ -51,8 +51,8 @@
                 <el-table-column label="操作" header-align="center" width="440">
                     <template slot-scope="scope">
                         <el-button icon="el-icon-document" size="mini" @click="handClick(scope.row,'detail')">详情</el-button>
-                        <el-button style="background-color: #4395fb;color: #fff;border: none;" icon="el-icon-edit" size="mini" @click="handClick(scope.row,'edit')">编辑</el-button>
-                        <el-button icon="el-icon-delete" size="mini" @click="handClick(scope.row,'delete')" v-if="scope.row.sendingMethod==3">删除</el-button>
+<!--                        <el-button style="background-color: #4395fb;color: #fff;border: none;" icon="el-icon-edit" size="mini" @click="handClick(scope.row,'edit')">编辑</el-button>-->
+<!--                        <el-button icon="el-icon-delete" size="mini" @click="handClick(scope.row,'delete')" v-if="scope.row.sendingMethod==3">删除</el-button>-->
                         <el-button icon="el-icon-lock" size="mini" type="danger" @click="handClick(scope.row,'close')" v-if="scope.row.sendingMethod==1">关闭</el-button>
                         <el-button icon="el-icon-switch-button" size="mini" type="success" @click="handClick(scope.row,'start')" v-if="scope.row.sendingMethod==1">启用</el-button>
                     </template>

@@ -63,6 +63,12 @@
                 <el-table-column align="center" header-align='center' prop="people" label="用餐人数" width="80"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="totalPrice" label="总额(元)"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="createTime" label="下单时间" width="180"></el-table-column>
+                <el-table-column align="center" header-align='center' prop="couponMoney" label="下单时间" width="180">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.couponMoney==numm">0</span>
+                        <span v-else>scope.row.couponMoney</span>
+                    </template>
+                </el-table-column>
                 <el-table-column align="left" header-align='center' label="操作" width="440">
                     <template slot-scope="scope">
                         <el-button style="background-color: #f37276;color: #fff;border: none;" icon="el-icon-document" size="mini" @click="handleClick(scope.$index, scope.row, 'detail')">查看</el-button>
@@ -232,7 +238,7 @@
                         let deleteParam ={
                             orderNo: row.orderNo,
                         };
-                        
+
                         requestDeleteCheackAll(deleteParam).then(res => {
                             this.$message({
                                 type: 'success',

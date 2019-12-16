@@ -36,9 +36,9 @@
                             </el-select>
                             <el-button  :icon="moneyType==0 ? 'el-icon-plus':'el-icon-minus'"   circle @click="handleClick('', '', 'moneyType')"></el-button>
                         </el-form-item>
-                        <el-form-item label="自定义金额" prop="money2" style="width: 320px" v-if="moneyType==1">
-                            <el-input placeholder='请输入' v-model="editForm.money2" :maxlength="11" @change="changeCustomMoney"></el-input>
-                        </el-form-item>
+<!--                        <el-form-item label="自定义金额" prop="money2" style="width: 320px" v-if="moneyType==1">-->
+<!--                            <el-input placeholder='请输入' v-model="editForm.money2" :maxlength="11" @change="changeCustomMoney"></el-input>-->
+<!--                        </el-form-item>-->
                     </el-col>
                     <el-col :span="9">
                         <el-form-item label="赠送金额" prop="give">
@@ -209,7 +209,6 @@
                     this.editForm.memberId=''
                 }
                 this.getTreeAjaxPage();
-
             },
             //充值金额
             changeMoney(val){
@@ -224,6 +223,7 @@
                     this.editForm.give=''
                     this.editForm.discount=''
                 }
+                this.editForm.giveIntegral=val;
 
             },
             //自定义充值金额
@@ -238,7 +238,7 @@
                             return item.money === front;
                         });
                         if(tn){
-                            this.editForm.give = tn.give;
+                           // this.editForm.give = tn.give;
                             this.editForm.discount = tn.discount;
                         }else{
                             this.editForm.give=''
@@ -281,7 +281,6 @@
                     let data = res.data.items;
                     if(data && data.length>0){
                         _this.moneyList = data;
-                        this.editForm.giveIntegral=data[0].giveIntegral;
                     }else{
                         _this.moneyList = [];
                     }
@@ -366,6 +365,7 @@
                         _this.editForm.money='';
                         _this.editForm.give='';
                         _this.editForm.discount='';
+                        _this.editForm.giveIntegral='';
                     }else{
                         this.moneyType='0'
                         this.disabled3 = false;

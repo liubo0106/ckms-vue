@@ -103,7 +103,9 @@
             //请求顾客消费记录
             getAjaxDetail(){
                 let _this = this;
-                requestDetailMemberRecord({id:_this.orderId}).then(res => {
+                console.log(123);
+                requestDetailMemberRecord({id:_this.orderId}).then((res) => {
+                    console.log(res);
                     if(res.status == 200){
                         _this.remark=res.data.remark;
                         let data = res.data.orders;
