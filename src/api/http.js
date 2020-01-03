@@ -2,13 +2,6 @@
  * Created by Administrator on 2019/2/2.
  */
 import axios from 'axios';
-//let baseProduceUrl = 'https://www.89shi.cn/ckms/';//正式打包地址
-//let baseProduceUrl = 'http://39.98.152.8:80/ckmstest/';//测试打包地址
-let baseProduceUrl = 'https://www.89shi.cn/ckmsdev/';//自己测试打包地址
-//let baseTestURL = 'http://192.168.60.188:8083/ckmsdev/';//本地联调地址
-//let baseTestURL = 'https://www.89shi.cn/ckms/';//正式地址
-//let baseTestURL = 'https://www.89shi.cn/ckmsdev/';//测试地址
-let baseTestURL = 'http://192.168.0.130:8083/ckmsdev/'; //自己测试地址
 let ACTIVE_ENV_CONFIG = process.env.ACTIVE_ENV_CONFIG
 // 获取配置环境的公共参数值
 let envParams = process.env[ACTIVE_ENV_CONFIG]
@@ -16,23 +9,19 @@ let envParams = process.env[ACTIVE_ENV_CONFIG]
 // console.log('envParams:' + JSON.stringify(envParams))
 export function httpRequest(method, url, params, contentType) {
     if (contentType == '') {
-        console.log(envParams);
         return axios({
             method: method,
-           baseURL: process.env.NODE_ENV == 'development' ? envParams.API_PATH : envParams.API_PATH,
-           //baseURL:envParams.API_PATH,
+            baseURL: process.env.NODE_ENV == 'development' ? envParams.API_PATH : envParams.API_PATH,
             url: url,
             params: params,
             headers: { 'sessionId': sessionStorage.getItem('sessionId') }
         });
     } else if (contentType == 'blob') {
-        console.log(envParams);
         return axios({
             responseType: 'blob',
             contentType: 'application/json',
             method: method,
             baseURL: process.env.NODE_ENV == 'development' ? envParams.API_PATH : envParams.API_PATH,
-            //baseUrl:envParams.API_PATH,
             url: url,
             data: params,
             headers: { 'sessionId': sessionStorage.getItem('sessionId') }
@@ -42,7 +31,6 @@ export function httpRequest(method, url, params, contentType) {
             contentType: 'application/json',
             method: method,
             baseURL: process.env.NODE_ENV == 'development' ? envParams.API_PATH : envParams.API_PATH,
-           // baseUrl:'https://www.89shi.cn/ckmsdev/',
             url: url,
             data: params,
             headers: { 'sessionId': sessionStorage.getItem('sessionId') }

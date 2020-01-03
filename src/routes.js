@@ -101,6 +101,9 @@ const coupon=()=>import('./views/coupon/coupon');//优惠卷管理
 const addcoupon=()=>import('./views/coupon/addcoupon');//添加优惠卷
 const editcoupon=()=>import('./views/coupon/editcoupon');//修改优惠卷
 const integralrule=()=>import('./views/integralrule/integralrule');//积分充值规则管理
+const storeSummary=()=>import('./views/reportManage/storeSummary')//门店汇总表
+const materialSummary=()=>import('./views/reportManage/materialSummary')//原材料汇总表
+const storeBusinessReport=()=>import('./views/reportManage/storeBusinessReport')//门店营业额汇总表
 let routes = [
     {
         path: '/login',
@@ -201,6 +204,8 @@ let routes = [
             { path: '/instockreportdetail', component: inStockReportDetail, name: '入库单详情报表统计'},
             { path: '/outstockreport', component: outStockReport, name: '出库单报表统计'},
             { path: '/outstockreportdetail', component: outStockReportDetail, name: '出库单详情报表统计'},
+            { path: '/storeSummary',component:storeSummary,name:'门店汇总表'},
+            {path:'/materialSummary',component:materialSummary,name:'原材料汇总表'},
             { path: '/unitconversion', component: unitConversion, name: '单位换算配置管理'},
             { path: '/ruturnGreens', component: ruturnGreens, name: '顾客退菜明细'},
             { path: '/compositeFlavour', component: compositeFlavour, name: '复合调料包'},
@@ -217,6 +222,7 @@ let routes = [
             {path:'/addcoupon',component:addcoupon,name:'添加优惠卷'},
             {path:'/editcoupon',component:editcoupon,name:'修改优惠卷'},
             {path:'/integralrule',component:integralrule,name:'积分规则'},
+            {path:'/storeBusinessReport',component:storeBusinessReport,name:'门店营业额汇总表'},
         ]
     },
     {

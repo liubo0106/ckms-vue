@@ -52,9 +52,15 @@
                                 <span>{{scope.row.costPrice | substr}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" header-align='center' prop="spec" label="规格" ></el-table-column>
                         <el-table-column align="center" header-align='center' prop="stock" label="库存量" width="80"></el-table-column>
+                        <el-table-column align="center" header-align='center' prop="standard" label="基础单位" width="80"></el-table-column>
                         <el-table-column align="center" header-align='center' prop="safeStock" label="安全库存量" width="80"></el-table-column>
+                        <el-table-column align="center" header-align='center' prop="spec" label="规格" ></el-table-column>
+                        <el-table-column align="center" header-align='center' label="规格库存">
+                            <template slot-scope="scope">
+                                <span>{{scope.row.specSufStock}}{{scope.row.specSufStandard}}</span>
+                            </template>
+                        </el-table-column>
                         <el-table-column align="center" header-align='center' prop="isDeleteName" label="是否启用" width="120">
                             <template slot-scope="scope">
                                 <span :class="{'active': scope.row.isDelete=='0'}">{{scope.row.isDeleteName}}</span>

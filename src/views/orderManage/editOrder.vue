@@ -383,6 +383,7 @@
                     name:'',
                     categoryId:'',
                     kind:'',
+                    status:1,
                 },
                 orgTreeData: [],
                 saveLoading: false,

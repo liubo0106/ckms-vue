@@ -2,7 +2,8 @@
     <section>
         <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/restaurant' }">门店套餐管理</el-breadcrumb-item>
-            <el-breadcrumb-item>{{id == '' ? '新增': '编辑'}}</el-breadcrumb-item>
+            <el-breadcrumb-item v-if="type==1">详情</el-breadcrumb-item>
+            <el-breadcrumb-item v-else>{{id == '' ? '新增': '编辑'}}</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="contentBody">
             <!--主表添加编辑-->
@@ -87,7 +88,7 @@
                         <div class="el-upload__tip">只能上传jpg/png文件，且不超过2M</div>
                     </template>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item v-if="type!=1">
                     <el-button type="primary" @click="submitForm('editForm')" :loading="saveLoading">提交</el-button>
                     <el-button @click="goBack()">返回</el-button>
                 </el-form-item>
@@ -109,7 +110,7 @@
                     <el-table-column align="center" header-align='center' prop="serialNo" label="菜品编号"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="price" label="单价" width="140"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="number" label="数量" width="180"></el-table-column>
-                    <el-table-column align="center" header-align='center' label="操作" width="260">
+                    <el-table-column align="center" header-align='center' label="操作" width="260" v-if="type!=1">
                         <template slot-scope="scope">
                             <el-button size="mini" @click="handleClickDetail(scope.$index, scope.row, 'edit')">编辑</el-button>
                             <el-button size="mini" type="danger" @click="handleClickDetail(scope.$index, scope.row, 'delete')">删除</el-button>
@@ -296,6 +297,7 @@
                     totalPrice:0,
                     stock:0,
                 },
+                type:0,
                 param: {
                     pageNo:1,
                     pageSize:15,
@@ -440,7 +442,27 @@
                 }
             }
         },
+        created() {
+          this.getData();
+        },
         methods: {
+            getData(){
+
+              let dataDetail=JSON.parse(sessionStorage.getItem('restaurantDetail'));
+              if(dataDetail!=null){
+                  this.editForm.num=dataDetail.num;
+                  this.editForm.categoryId=dataDetail.categoryId;
+                  this.editForm.name=dataDetail.name;
+                  this.editForm.kind=dataDetail.kind;
+                  this.editForm.isSale=dataDetail.isSale;
+                  this.editForm.isDiscount=dataDetail.isDiscount;
+                  this.editForm.price=dataDetail.price;
+                  this.id=dataDetail.id;
+                  this.type=1;
+                  this.getAjaxList();
+              }
+
+            },
             indexMethod(index) {
                 return (this.paramTree3.pageNo - 1) * this.paramTree3.pageSize + index + 1;
             },

@@ -58,6 +58,7 @@
                 <el-table-column align="center" header-align='center' prop="createUser" label="操作员" width="120"></el-table-column>
                 <el-table-column align="left" header-align='center' label="操作" width="380">
                     <template slot-scope="scope">
+                        <el-button icon="el-icon-document" size="mini" @click="handleClick(scope.$index, scope.row, 'detail')">详情</el-button>
                         <el-button icon="el-icon-upload2" style="background-color: #4395fb;color: #fff;border: none;" v-if='scope.row.isSale == 1' type="isSale" size="small" @click="handleClick(scope.$index, scope.row, 'isClose')">下架</el-button>
                         <el-button icon="el-icon-download" style="background-color: #847ffe;color: #fff;border: none;" v-if='scope.row.isSale == 0' size="small" @click="handleClick(scope.$index, scope.row, 'isSale')">上架</el-button>
                         <el-button style="background-color: #24cbc1;color: #fff;border: none;" icon="el-icon-edit" type="primary" size="mini" v-if='scope.row.status != 1' @click="handleClick(scope.$index, scope.row, 'edit')">编辑</el-button>
@@ -122,6 +123,11 @@
             },
             handleClick(index, row, doType) {
                 let _this = this;
+                if(doType=='detail'){
+                    let dataRestaurant=JSON.stringify(row);
+                    sessionStorage.setItem('restaurantDetail',dataRestaurant);
+                    this.$router.push({path:'/editInRestaurant'})
+                }
                 if(doType == 'delete'){
                     this.$confirm('真的删除该行数据么, 是否继续?', '提示', {
                         confirmButtonText: '确定',

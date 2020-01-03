@@ -24,6 +24,9 @@
                         <el-form-item label-width="0">
                             <el-button icon="el-icon-search" circle @click.native.prevent="onSearch" native-type="submit"></el-button>
                         </el-form-item>
+                        <el-form-item>
+                            <el-button icon="el-icon-download" type="primary" @click="kitchenOut" size="small">导出</el-button>
+                        </el-form-item>
                     </el-form>
                     <el-table :data="tableData" border :row-class-name="tableRowClassName">
                         <el-table-column align="center" header-align='center' type="index" :index="indexMethod" label="行号" width="80"></el-table-column>
@@ -64,7 +67,7 @@
     </section>
 </template>
 <script type="text/ecmascript-6">
-    import { requestSearchKitchenRawList,requestSearchProduct} from '../../api/api';
+    import { requestSearchKitchenRawList,requestSearchProduct,requestUrl} from '../../api/api';
     export default {
         name: 'user-manage',
         data() {
@@ -115,6 +118,14 @@
                         }
                     }
                 });
+            },
+            kitchenOut(){
+                location.href = requestUrl+'export/kitchenRawStockExport'+
+                    '?pageNo='+this.param.pageNo+
+                    '&name='+this.searchForm.name+
+                    '&serialNo='+this.searchForm.serialNo+
+                    '&categoryId='+this.param.categoryId+
+                    '&pageSize=0';
             },
             indexMethod(index) {
                 return (this.param.pageNo - 1) * this.param.pageSize + index + 1;

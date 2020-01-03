@@ -36,9 +36,9 @@
                             </el-select>
                             <el-button  :icon="moneyType==0 ? 'el-icon-plus':'el-icon-minus'"   circle @click="handleClick('', '', 'moneyType')"></el-button>
                         </el-form-item>
-<!--                        <el-form-item label="自定义金额" prop="money2" style="width: 320px" v-if="moneyType==1">-->
-<!--                            <el-input placeholder='请输入' v-model="editForm.money2" :maxlength="11" @change="changeCustomMoney"></el-input>-->
-<!--                        </el-form-item>-->
+                        <el-form-item label="自定义金额" prop="money2" style="width: 320px" v-if="moneyType==1">
+                            <el-input placeholder='请输入' v-model="editForm.money2" :maxlength="11" @change="changeCustomMoney"></el-input>
+                        </el-form-item>
                     </el-col>
                     <el-col :span="9">
                         <el-form-item label="赠送金额" prop="give">
@@ -416,7 +416,6 @@
                                     _this.editForm.money2='';
                                     _this.editForm.give='';
                                     _this.editForm.discount='';
-                                    _this.editForm.memberId='';
                                     _this.saveLoading = false;
                                 }
                             });

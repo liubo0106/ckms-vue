@@ -31,6 +31,7 @@
                         <el-form-item label-width="0">
                             <el-button icon="el-icon-search" circle @click.native.prevent="onSearch" native-type="submit"></el-button>
                             <el-button icon="el-icon-refresh-right" circle @click="reset"></el-button>
+                            <el-button icon="el-icon-download" type="primary" @click="shopOut" size="small">导出</el-button>
                         </el-form-item>
                     </el-col>
                     <!--<el-col :span="4">-->
@@ -67,7 +68,13 @@
     </section>
 </template>
 <script type="text/ecmascript-6">
-    import { requestSearchGoods, requestDeleteGoods,requestStatusIn,requestMenuListByInPid} from '../../api/api';
+    import {
+        requestSearchGoods,
+        requestDeleteGoods,
+        requestStatusIn,
+        requestMenuListByInPid,
+        requestUrl
+    } from '../../api/api';
     export default {
         name: 'user-manage',
         data() {
@@ -104,6 +111,15 @@
             this.getAjaxCategory();
         },
         methods: {
+            shopOut(){
+                location.href = requestUrl+'export/storeGoodsStockExport '+
+                    '?pageNo='+this.param.pageNo+
+                    '&name='+this.searchForm.name+
+                    '&isSale='+this.searchForm.isSale+
+                    '&kind='+this.searchForm.kind+
+                    '&categoryId='+this.searchForm.categoryId+
+                    '&pageSize=0';
+            },
             indexMethod(index) {
                 return (this.param.pageNo - 1) * this.param.pageSize + index + 1;
             },

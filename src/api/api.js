@@ -688,3 +688,11 @@ export const requestCouponInfo=params=>{return httpRequest('get','server/coupon/
 export const requestIntegralruleSave=params=>{return httpRequest('post','server/integralRules/save',params,'json')}
 export const requestIntegralrulePage=params=>{return httpRequest('post','server/integralRules/page',params,'json')}
 export const requestDeleteInteg=params=>{return httpRequest('post','server/integralRules/delete',params,'')}
+//桌子合并
+export const requestDrogTwos=params=>{
+    return httpRequest('get','server/storeDesk/mergetable',params,'');
+}
+//获取积分规则
+export const requestIntegralruleInfo=params=>{
+    return httpRequest('get','server/integralRules/getIntegraleByType',params,'');
+}

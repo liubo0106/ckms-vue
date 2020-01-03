@@ -9,10 +9,11 @@
                 <div class="contentBody">
                     <div class="boxContent">
                         <div class="zhuotai"  :class="item.status ==1 ? 'self-card self-card-red' : 'self-card self-card-green' && item.isOpen==1? 'self-card self-card-green' : 'self-card self-card-gray'"  v-for="item in tableData" >
-                            <div style="text-align: center;padding-top: 10px">
+                            <div style="text-align: left;padding: 10px;box-sizing: border-box">
                                 <el-button  v-if="item.status==1"  @click="handelDoType(item,'zhuantai')">转台</el-button>
                                 <el-button  v-if="item.status==1"  @click="handelDoType(item,'fuzhi')">复制菜单</el-button>
-                                <el-button  v-if="item.status==1"  type="success" @click="checkOut(item)">结算</el-button>
+                                <el-button  v-if="item.status==1"  type="success" @click="checkOut(item)" style="margin-top: 10px">结算</el-button>
+                                <el-button  v-if="item.status==1"  @click="handelDoType(item,'hebin')" style="margin-left: 0;margin-top: 10px;">合并</el-button>
                             </div>
                             <div @click="addOrder(item)" style="height: 190px;">
                                 <div class="title"><i class="largeFont">{{item.deskNo}}</i>号桌
@@ -86,11 +87,23 @@
                     <el-input placeholder='请输入' v-model="dialogForm.phone" :maxlength="25" disabled style="width: 218px">{{dialogForm.phone}}</el-input>
                 </el-form-item>
                 <div v-if="showCoupon!=2">
-                <el-form-item label="选择优惠卷" prop="phone" v-if="dialogForm.type==2 || this.couponData!=''">
+                <el-form-item label="选择优惠卷" v-if="dialogForm.type==2 || this.couponData!=''">
                     <span @click="checkCoupon" style="cursor: pointer;">有可使用优惠卷</span>
                 </el-form-item>
                 </div>
-                <el-form-item label="优惠金额" prop="phone" v-if="dialogForm.type==2 || this.couponData!=''">
+                <div v-if="dialogForm.type==2">
+                <el-form-item v-if="allIntergralrule!=0" label="积分抵扣">
+                    <span>共有{{allIntergralrule}}积分,{{IntegralruleData.integral}}积分抵扣{{IntegralruleData.amount}}元</span>
+                </el-form-item>
+                <el-form-item label="是否使用" v-if="allIntergralrule!=0">
+                    <span><el-switch
+                            v-model="value"
+                            @change="isActive"
+                            active-color="#13ce66"
+                            inactive-color="#ff4949"></el-switch></span>
+                </el-form-item>
+                </div>
+                <el-form-item label="优惠金额" prop="phone" v-if="dialogForm.coupon!=0">
                     <span style="cursor: pointer;" v-html="dialogForm.coupon"></span>
                 </el-form-item>
                 <el-form-item label="实收金额">
@@ -168,6 +181,25 @@
                 <el-button type="primary" :loading="saveLoading" @click="dialogZhuanTaiFormSubmit('dialogZhuanTaiForm')">确 定</el-button>
             </div>
         </el-dialog>
+
+        <!--合并桌子-->
+        <el-dialog title="合并" :visible.sync="dialogZhuanTaiFormVisible" width="30%">
+            <el-form :model="dialogZhuanTaiForm" :rules="rules" ref="dialogZhuanTaiForm" label-width="120px">
+                <el-form-item label="当前桌号">
+                    {{dialogZhuanTaiForm.oldDeskNo}}
+                </el-form-item>
+                <el-form-item label="选择桌号" prop="deskId">
+                    <el-select v-model="dialogZhuanTaiForm.deskId" placeholder="请选合并到哪一桌">
+                        <el-option  v-if="dialogZhuanTaiForm.oldDeskId != ck.id" v-for="ck in tableData" :label="'第'+ck.deskNo+'桌'" :value="ck.id"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogZhuanTaiFormVisible = false">取 消</el-button>
+                <el-button type="primary" :loading="saveLoading" @click="pushOrder('dialogZhuanTaiForm')">确 定</el-button>
+            </div>
+        </el-dialog>
+
         <!--复制菜单 -->
         <el-dialog title="复制菜单" :visible.sync="dialogCopyFormVisible" width="30%">
             <el-form :model="dialogCopyForm" :rules="rules" ref="dialogCopyForm" label-width="120px">
@@ -264,7 +296,8 @@
         requestBugetData,
         requestUrl,
         requestCheckOrder,
-		requestStoreOrderpaymentCheck,
+        requestStoreOrderpaymentCheck,
+        requestDrogTwos, requestIntegralruleInfo,
     } from '../../api/api';
 
     export default {
@@ -380,6 +413,11 @@
                 dialogIsOkForm:{},
                 couponDataList:[],
                 orderList:[],
+                IntegralruleData:'',
+                allIntergralrule:0,
+                useIntegrale:0,
+                deductionAcount:0,
+                value:0,
                 rules:{
                  paymentMethod: [
                     { required: true, message: '请选择活动区域', trigger: 'change' },
@@ -399,7 +437,64 @@
             },
         },
         methods: {
+            pushOrder(formName){
+                let _this = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let str = '';
+                        let tn = {};
+                        tn = _this.tableData.find((item)=>{
+                            return item.id === _this.dialogZhuanTaiForm.deskId;
+                        });
+                        if(tn.status == 1){
+                            str = tn.deskNo+'号桌正在被使用！';
+                        }
+                        this.$confirm('确定将该桌合并到'+tn.deskNo+'号桌吗？'+str+'是否继续?', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            _this.saveLoading = true;
+                            requestDrogTwos({id:_this.dialogZhuanTaiForm.oldDeskId,toId: _this.dialogZhuanTaiForm.deskId,deskNo:tn.deskNo}).then(res => {
+                                if(res.status == 200){
+                                    this.$message({
+                                        type: 'success',
+                                        message: '合并成功!',
+                                        duration:300,
+                                        onClose:function(){
+                                            _this.saveLoading = false;
+                                            _this.dialogZhuanTaiFormVisible = false;
+                                            _this.getAjaxList();
+                                            _this.getStatusAjaxList();
+                                        }
+                                    });
+                                }else{
+                                    _this.saveLoading = false;
+                                    _this.dialogZhuanTaiFormVisible = false;
+                                    _this.$message({
+                                        type: 'error',
+                                        message: res.msg
+                                    });
+                                }
+                            });
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '已取消'
+                            });
+                        });
+                    }else{
+                        return false;
+                    }
+                });
+            },
             handelDoType(row,type){
+                if(type=='hebin'){
+                    this.dialogZhuanTaiForm.deskId = '';
+                    this.dialogZhuanTaiForm.oldDeskId = row.id;
+                    this.dialogZhuanTaiForm.oldDeskNo = row.deskNo;
+                    this.dialogZhuanTaiFormVisible = true;
+                }
                 if(type == 'zhuantai'){
                     this.dialogZhuanTaiForm.deskId = '';
                     this.dialogZhuanTaiForm.oldDeskId = row.id;
@@ -413,9 +508,31 @@
                     this.dialogCopyFormVisible = true;
                 }
             },
+            //是否使用积分
+            isActive(val){
+                if(this.dialogForm.discountPrice>this.IntegralruleData.minUseAmount){
+                    if(val){
+                        this.dialogForm.discountPrice=this.dialogForm.discountPrice-this.IntegralruleData.amount;
+                        this.allIntergralrule=this.allIntergralrule-this.IntegralruleData.integral;
+                        this.useIntegrale=this.IntegralruleData.integral;
+                        this.deductionAcount=this.IntegralruleData.amount;
+                    }else{
+                        this.dialogForm.discountPrice=this.dialogForm.discountPrice+this.IntegralruleData.amount;
+                        this.allIntergralrule=this.allIntergralrule+this.IntegralruleData.integral;
+                        this.useIntegrale=0;
+                        this.deductionAcount=0;
+                    }
+                }else{
+                    this.$message({
+                        type:'error',
+                        message:'不满足积分使用规则',
+                    })
+                    this.value=0;
+                }
+
+            },
             checkCoupondata(data,index){
                 this.couponData[index].check=!this.couponData[index].check;
-
             },
             confrimCoupon(){
                 this.couponDataList=[];
@@ -435,11 +552,8 @@
                 }
                 this.dialogForm.coupon=couponPrice;
                 this.dialogForm.discountPrice=this.dialogForm.discountPrice-this.dialogForm.coupon;
-                //this.spanClick();
                 this.showCoupon=2;
-                console.log(this.showCoupon);
                 this.dialogCoupon=false;
-
             },
             spanClick(e){
               console.log(e);
@@ -455,7 +569,7 @@
                     if(this.couponData[i].superimposedSheets>this.dialogForm.discountPrice || this.couponData[i].couponUploadStatus==1){
                         this.couponData[i].isPrice=true;
                     }
-                  
+
                 }
             },
             dialogZhuanTaiFormSubmit(formName){
@@ -630,9 +744,7 @@
                 let noDiscountAmount = parseFloat(this.dialogForm.noDiscountAmount);
                 let recPrice = parseFloat(this.dialogForm.recPrice);
                 let totalPrice = parseFloat(this.dialogForm.totalPrice);
-                console.log('discount:'+discount)
-                console.log('noDiscountAmount:'+noDiscountAmount)
-                console.log('totalPrice:'+totalPrice)
+                this.allIntergralrule=row.integral;
                if(row.amount-_this.dialogForm.discountPrice<=0){
                    _this.dialogTreeFormVisible = false;
                    _this.clientType="0"
@@ -668,6 +780,11 @@
                            console.log(this.couponData);
                        }
 
+                   })
+                   requestIntegralruleInfo({type:2}).then((res)=>{
+                       if(res.status==200){
+                           this.IntegralruleData=res.data;
+                       }
                    })
 
 
@@ -858,13 +975,8 @@
 								let noDiscountAmount = parseFloat(this.dialogForm.noDiscountAmount);
 								let totalPrice = parseFloat(this.dialogForm.totalPrice);
 								let fraction = ((totalPrice * this.discount + (1 - this.discount) * noDiscountAmount)-this.dialogForm.coupon).toFixed(2)-this.dialogForm.discountPrice;
-                                console.log('this.dialogForm.discount:'+this.dialogForm.discount)
-								console.log('discount:'+this.discount)
-                                console.log('noDiscountAmount:'+noDiscountAmount)
-                                console.log('totalPrice:'+totalPrice)
-                                console.log('fraction:'+fraction)
 								requestStoreOrdeCheckOut({deskId:this.dialogForm.deskId,discount:this.dialogForm.discount,memberId:this.dialogForm.memberId,remark: this.dialogForm.remark,fraction:fraction,type:this.dialogForm.type,customerId:this.dialogForm.customerId,paymentMethod:this.dialogForm.paymentMethod,
-                                    couponMoney:this.dialogForm.coupon,couponIds:id,
+                                    couponMoney:this.dialogForm.coupon,couponIds:id,useIntegrale:this.useIntegrale,deductionAcount:this.deductionAcount
                                 }).then(res => {
 								    if(res.status == 200){
 								        this.$message({
@@ -897,6 +1009,9 @@
             },
             //点击结算按钮
             checkOut(row){
+                this.value=0;
+                this.dialogForm.type="1";
+                this.buttonPu='';
                 this.dialogFormTitle = '第'+row.deskNo+'号桌结算';
                 requestStoreOrdeCheckOrder({deskId:row.id}).then(res => {
 					console.log(res);

@@ -28,6 +28,9 @@
                                     <el-form-item label-width="0">
                                         <el-button icon="el-icon-search" circle @click.native.prevent="onSearch" native-type="submit"></el-button>
                                     </el-form-item>
+                                    <el-form-item>
+                                        <el-button icon="el-icon-download" type="primary" @click="inventoryOut" size="small">导出</el-button>
+                                    </el-form-item>
                                 </el-form>
                                 <el-table :data="tableData" border   :row-class-name="tableRowClassName">
                                     <el-table-column align="center" header-align='center' type="index" :index="indexMethod" label="行号" width="80"></el-table-column>
@@ -90,6 +93,7 @@
                                     </el-form-item>
                                     <el-form-item label-width="0">
                                         <el-button icon="el-icon-search" circle @click.native.prevent="onSearch2" native-type="submit"></el-button>
+                                        <el-button icon="el-icon-download" type="primary" @click="inventoryAllOut" size="small">导出</el-button>
                                     </el-form-item>
                                 </el-form>
                                 <el-table :data="tableData2" border  :row-class-name="tableRowClassName">
@@ -137,6 +141,7 @@
                             </el-form-item>
                             <el-form-item label-width="0">
                                 <el-button icon="el-icon-search" circle @click.native.prevent="onSearch3" native-type="submit"></el-button>
+                                <el-button icon="el-icon-download" type="primary" @click="inventoryOutList" size="small">导出</el-button>
                             </el-form-item>
                         </el-form>
                         <el-table :data="tableData3" border   :row-class-name="tableRowClassName">
@@ -173,6 +178,7 @@
                             </el-form-item>
                             <el-form-item label-width="0">
                                 <el-button icon="el-icon-search" circle @click.native.prevent="onSearch4" native-type="submit"></el-button>
+                                <el-button icon="el-icon-download" type="primary" @click="inventoryOutListpro" size="small">导出</el-button>
                             </el-form-item>
                         </el-form>
                         <el-table :data="tableData4" border  :row-class-name="tableRowClassName">
@@ -206,14 +212,25 @@
     </section>
 </template>
 <script type="text/ecmascript-6">
-    import { requestSearchProductList,requestSearchProduct,requestSearchGroupList,requestSearchGroup,requestSearchAssets,requestSaveProduct,requestSaveGroup,requestSaveAssets} from '../../api/api';
+    import {
+        requestSearchProductList,
+        requestSearchProduct,
+        requestSearchGroupList,
+        requestSearchGroup,
+        requestSearchAssets,
+        requestSaveProduct,
+        requestSaveGroup,
+        requestSaveAssets,
+        requestUrl
+    } from '../../api/api';
     export default {
         name: 'user-manage',
         data() {
             return {
                 //原料管理
                 searchForm: {
-                    name: ''
+                    name: '',
+                    serialNo:'',
                 },
                 tableData: null,
                 param: {
@@ -247,6 +264,7 @@
                     checkChild:'all',
                     serialNo:'',
                     isDelete:1,
+                    packCategoryId:'',
                 },
                 totalNum2:0,
                 orgTreeData2: [],
@@ -288,6 +306,18 @@
             }
         },
         methods: {
+            inventoryOut(){
+                location.href =`${requestUrl}export/productStockExport?name=${this.searchForm.name}&serialNo=${this.searchForm.serialNo}&categoryId=${this.param.categoryId}`;
+            },
+            inventoryAllOut(){
+                location.href =`${requestUrl}export/packStockExport?name=${this.searchForm2.name}&serialNo=${this.searchForm2.serialNo}&categoryId=${this.param2.packCategoryId}`;
+            },
+            inventoryOutList(){
+                location.href =`${requestUrl}export/consumableStockExport?name=${this.searchForm3.name}&serialNo=${this.searchForm3.serialNo}&type=1`;
+            },
+            inventoryOutListpro(){
+                location.href =`${requestUrl}export/consumableStockExport?name=${this.searchForm4.name}&serialNo=${this.searchForm4.serialNo}&type=2`;
+            },
             handleYuJingClick(index, row, doType) {
                 let _this = this;
                 if(doType == 'isOpen'){
