@@ -69,7 +69,7 @@ module.exports = {
   API_PATH: '"https://www.89shi.cn/ckmsdev/"'
   //API_PATH: '"http://192.168.0.123:8083/ckmsdev/"'
   },
-  // 测试环境接口地址
+  // 测试环境接口地址 测试
   test: {
     API_PATH: '"https://www.89shi.cn/ckmstest/"',
     //API_PATH: '"http://localhost:8083/ckmsdev/"'
