@@ -696,3 +696,27 @@ export const requestDrogTwos=params=>{
 export const requestIntegralruleInfo=params=>{
     return httpRequest('get','server/integralRules/getIntegraleByType',params,'');
 }
+//原材料报表
+export const requestReportrawProdReport=params=>{
+    return httpRequest('post','server/report/rawProdReport',params,'json');
+}
+//获取门店营业额报表
+export const requestStorePage=params=>{
+    return httpRequest('post','server/report/storeTurnover',params,'json')
+}
+//门店库存报表
+export const requestShopPage=params=>{
+    return httpRequest('post','server/report/storegoodsReport',params,'json')
+}
+//赠送菜品保存
+export const requestGoodsSave=params=>{
+    return httpRequest('post','server/coupon/giveFood',params,'json')
+}
+//赠送菜品列表
+export const requestGoodsDataList=params=>{
+    return httpRequest('post','server/coupon/getGiveFood',params,'json')
+}
+//删除赠菜列表
+export const requestGoodsDelete=params=>{
+    return httpRequest('get','server/coupon/deleteGiveFood',params,'')
+}

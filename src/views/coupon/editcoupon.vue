@@ -15,9 +15,9 @@
                         <el-form-item label="优惠卷金额" prop="couponAmount">
                             <el-input v-model="couponData.couponAmount"></el-input>
                         </el-form-item>
-                        <el-form-item label="满多少元使用" prop="superimposedSheets">
+                        <!--<el-form-item label="满多少元使用" prop="superimposedSheets">
                             <el-input v-model="couponData.superimposedSheets"></el-input>
-                        </el-form-item>
+                        </el-form-item>-->
                         <el-form-item label="发放数量" prop="couponNumber">
                             <el-input v-model="couponData.couponNumber" placeholder="输入0表示无限制"></el-input>
                         </el-form-item>
@@ -101,9 +101,9 @@
                     couponAmount: [
                         { required: true, message: '请输入优惠卷金额', trigger: 'blur' },
                     ],
-                    superimposedSheets: [
-                        { required: true, message: '满多少元使用', trigger: 'blur' },
-                    ],
+                    // superimposedSheets: [
+                    //     { required: true, message: '满多少元使用', trigger: 'blur' },
+                    // ],
                     couponNumber: [
                         { required: true, message: '请输入发放数量', trigger: 'blur' },
                     ],

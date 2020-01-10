@@ -52,6 +52,16 @@
                 <el-table-column align="center" header-align='center' prop="phone" label="电话" width="120"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="deskNo" label="桌号" width="60"></el-table-column>
                 <el-table-column align="center" header-align='center' prop="people" label="用餐人数" width="60"></el-table-column>
+                <el-table-column align="center" header-align="center" prop="deductionAcount" label="积分抵扣">
+                    <template slot-scope="scope">
+                      {{scope.row.deductionAcount == null ? 0:scope.row.deductionAcount.toFixed(2)}}
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" header-align="center" prop="couponMoney" label="优惠卷抵扣">
+                    <template slot-scope="scope">
+                      {{scope.row.couponMoney == null ? 0 :scope.row.couponMoney.toFixed(2)}}
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" header-align='center' prop="recPrice" label="应收金额" width="60" >
                     <template slot-scope="scope">
                       {{scope.row.recPrice == null ? '' :scope.row.recPrice.toFixed(2)}}

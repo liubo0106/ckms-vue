@@ -171,84 +171,84 @@
                         </el-main>
                     </el-container>
                 </el-tab-pane>
-                <el-tab-pane label="原材料" name="2">
-                    <el-container>
-                        <el-aside>
-                            <el-tree :highlight-current="true" node-key="id"
-                                     default-expand-all
-                                     :data="orgTreeData2" :props="defaultProps" @node-click="handleNodeClick2"
-                                     :expand-on-click-node="false"></el-tree>
-                        </el-aside>
-                        <el-main>
-                            <el-form :inline="true" :model="searchTreeForm2" label-width="80px" class="demo-form-inline">
-                                <el-form-item label="编号">
-                                    <el-input v-model="searchTreeForm2.serialNo " :maxlength="200" autocomplete="off" placeholder="编号" clearable></el-input>
-                                </el-form-item>
-                                <el-form-item label="名称">
-                                    <el-input v-model="searchTreeForm2.name" :maxlength="200" autocomplete="off" placeholder="名称" clearable></el-input>
-                                </el-form-item>
-                                <el-form-item label-width="0">
-                                    <el-button icon="el-icon-search" circle @click.native.prevent="onSearchTree2" native-type="submit"></el-button>
-                                </el-form-item>
-                            </el-form>
-                            <el-table :data="tableTreeData2" border>
-                                <el-table-column align="center" header-align='center' type="index" label="行号" width="80"></el-table-column>
-                                <el-table-column align="center" header-align='center' prop="serialNo" label="原料编号" width="120"></el-table-column>
-                                <el-table-column align="center" header-align='center' prop="name" label="原料名称" ></el-table-column>
-                                <el-table-column align="center" header-align='center' prop="stock" label="库存量" width="100"></el-table-column>
-                                <el-table-column align="center" header-align='center' label="操作" width="80">
-                                    <template slot-scope="scope">
-                                        <el-button type="primary" size="small" @click="handleClickTreeAdd2(scope.$index, scope.row)">添加</el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                            <el-pagination
-                                    background
-                                    @current-change="handleCurrentChangeTree2"
-                                    :current-page.sync="paramTree2.pageNo"
-                                    :page-size="paramTree2.pageSize"
-                                    layout="total,prev, pager, next"
-                                    :total="totalTreeNum2">
-                            </el-pagination>
-                        </el-main>
-                    </el-container>
-                </el-tab-pane>
-                <el-tab-pane label="复合调料包" name="3">
-                    <el-container>
-                        <el-main>
-                            <el-form :inline="true" :model="searchTreeForm3" label-width="80px" class="demo-form-inline">
-                                <el-form-item label="编号">
-                                    <el-input v-model="searchTreeForm3.serialNo " :maxlength="200" autocomplete="off" placeholder="编号" clearable></el-input>
-                                </el-form-item>
-                                <el-form-item label="名称">
-                                    <el-input v-model="searchTreeForm3.name" :maxlength="200" autocomplete="off" placeholder="名称" clearable></el-input>
-                                </el-form-item>
-                                <el-form-item label-width="0">
-                                    <el-button icon="el-icon-search" circle @click.native.prevent="onSearchTree3" native-type="submit"></el-button>
-                                </el-form-item>
-                            </el-form>
-                            <el-table :data="tableTreeData3" border>
-                                <el-table-column align="center" header-align='center' type="index" label="行号" width="80"></el-table-column>
-                                <el-table-column align="center" header-align='center' prop="serialNo" label="编号" width="120"></el-table-column>
-                                <el-table-column align="center" header-align='center' prop="name" label="名称" ></el-table-column>
-                                <el-table-column align="center" header-align='center' prop="standard" label="单位" ></el-table-column>
-                                <el-table-column align="center" header-align='center' label="操作" width="80">
-                                    <template slot-scope="scope">
-                                        <el-button type="primary" size="small" @click="handleClickTreeAdd4(scope.$index, scope.row)">添加</el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                            <el-pagination
-                                    background
-                                    @current-change="handleCurrentChangeTree2"
-                                    :current-page.sync="paramTree3.pageNo"
-                                    :page-size="paramTree3.pageSize"
-                                    layout="total,prev, pager, next"
-                                    :total="totalTreeNum3">
-                            </el-pagination>
-                        </el-main>
-                    </el-container>
-                </el-tab-pane>
+<!--                <el-tab-pane label="原材料" name="2">-->
+<!--                    <el-container>-->
+<!--                        <el-aside>-->
+<!--                            <el-tree :highlight-current="true" node-key="id"-->
+<!--                                     default-expand-all-->
+<!--                                     :data="orgTreeData2" :props="defaultProps" @node-click="handleNodeClick2"-->
+<!--                                     :expand-on-click-node="false"></el-tree>-->
+<!--                        </el-aside>-->
+<!--                        <el-main>-->
+<!--                            <el-form :inline="true" :model="searchTreeForm2" label-width="80px" class="demo-form-inline">-->
+<!--                                <el-form-item label="编号">-->
+<!--                                    <el-input v-model="searchTreeForm2.serialNo " :maxlength="200" autocomplete="off" placeholder="编号" clearable></el-input>-->
+<!--                                </el-form-item>-->
+<!--                                <el-form-item label="名称">-->
+<!--                                    <el-input v-model="searchTreeForm2.name" :maxlength="200" autocomplete="off" placeholder="名称" clearable></el-input>-->
+<!--                                </el-form-item>-->
+<!--                                <el-form-item label-width="0">-->
+<!--                                    <el-button icon="el-icon-search" circle @click.native.prevent="onSearchTree2" native-type="submit"></el-button>-->
+<!--                                </el-form-item>-->
+<!--                            </el-form>-->
+<!--                            <el-table :data="tableTreeData2" border>-->
+<!--                                <el-table-column align="center" header-align='center' type="index" label="行号" width="80"></el-table-column>-->
+<!--                                <el-table-column align="center" header-align='center' prop="serialNo" label="原料编号" width="120"></el-table-column>-->
+<!--                                <el-table-column align="center" header-align='center' prop="name" label="原料名称" ></el-table-column>-->
+<!--                                <el-table-column align="center" header-align='center' prop="stock" label="库存量" width="100"></el-table-column>-->
+<!--                                <el-table-column align="center" header-align='center' label="操作" width="80">-->
+<!--                                    <template slot-scope="scope">-->
+<!--                                        <el-button type="primary" size="small" @click="handleClickTreeAdd2(scope.$index, scope.row)">添加</el-button>-->
+<!--                                    </template>-->
+<!--                                </el-table-column>-->
+<!--                            </el-table>-->
+<!--                            <el-pagination-->
+<!--                                    background-->
+<!--                                    @current-change="handleCurrentChangeTree2"-->
+<!--                                    :current-page.sync="paramTree2.pageNo"-->
+<!--                                    :page-size="paramTree2.pageSize"-->
+<!--                                    layout="total,prev, pager, next"-->
+<!--                                    :total="totalTreeNum2">-->
+<!--                            </el-pagination>-->
+<!--                        </el-main>-->
+<!--                    </el-container>-->
+<!--                </el-tab-pane>-->
+<!--                <el-tab-pane label="复合调料包" name="3">-->
+<!--                    <el-container>-->
+<!--                        <el-main>-->
+<!--                            <el-form :inline="true" :model="searchTreeForm3" label-width="80px" class="demo-form-inline">-->
+<!--                                <el-form-item label="编号">-->
+<!--                                    <el-input v-model="searchTreeForm3.serialNo " :maxlength="200" autocomplete="off" placeholder="编号" clearable></el-input>-->
+<!--                                </el-form-item>-->
+<!--                                <el-form-item label="名称">-->
+<!--                                    <el-input v-model="searchTreeForm3.name" :maxlength="200" autocomplete="off" placeholder="名称" clearable></el-input>-->
+<!--                                </el-form-item>-->
+<!--                                <el-form-item label-width="0">-->
+<!--                                    <el-button icon="el-icon-search" circle @click.native.prevent="onSearchTree3" native-type="submit"></el-button>-->
+<!--                                </el-form-item>-->
+<!--                            </el-form>-->
+<!--                            <el-table :data="tableTreeData3" border>-->
+<!--                                <el-table-column align="center" header-align='center' type="index" label="行号" width="80"></el-table-column>-->
+<!--                                <el-table-column align="center" header-align='center' prop="serialNo" label="编号" width="120"></el-table-column>-->
+<!--                                <el-table-column align="center" header-align='center' prop="name" label="名称" ></el-table-column>-->
+<!--                                <el-table-column align="center" header-align='center' prop="standard" label="单位" ></el-table-column>-->
+<!--                                <el-table-column align="center" header-align='center' label="操作" width="80">-->
+<!--                                    <template slot-scope="scope">-->
+<!--                                        <el-button type="primary" size="small" @click="handleClickTreeAdd4(scope.$index, scope.row)">添加</el-button>-->
+<!--                                    </template>-->
+<!--                                </el-table-column>-->
+<!--                            </el-table>-->
+<!--                            <el-pagination-->
+<!--                                    background-->
+<!--                                    @current-change="handleCurrentChangeTree2"-->
+<!--                                    :current-page.sync="paramTree3.pageNo"-->
+<!--                                    :page-size="paramTree3.pageSize"-->
+<!--                                    layout="total,prev, pager, next"-->
+<!--                                    :total="totalTreeNum3">-->
+<!--                            </el-pagination>-->
+<!--                        </el-main>-->
+<!--                    </el-container>-->
+<!--                </el-tab-pane>-->
             </el-tabs>
             <!--取消和确定按钮-->
             <div slot="footer" class="dialog-footer">

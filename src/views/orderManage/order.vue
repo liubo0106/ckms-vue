@@ -67,7 +67,7 @@
                         <el-option v-for="ck in checkOutList" :label="ck.name+'折'" :value="ck.name"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="选择支付方式" prop="paymentMethod">
+                <el-form-item label="选择支付方式" prop="paymentMethod" v-if="dialogForm.type!=2">
                     <el-select v-model="dialogForm.paymentMethod" placeholder="选择支付方式" @change="changePlay">
                          <el-option
                             v-for="item in options"
@@ -86,8 +86,8 @@
                 <el-form-item label="会员电话" prop="phone" v-if="dialogForm.type==2">
                     <el-input placeholder='请输入' v-model="dialogForm.phone" :maxlength="25" disabled style="width: 218px">{{dialogForm.phone}}</el-input>
                 </el-form-item>
-                <div v-if="showCoupon!=2">
-                <el-form-item label="选择优惠卷" v-if="dialogForm.type==2 || this.couponData!=''">
+                <div v-if="dialogForm.type==2">
+                <el-form-item label="选择优惠卷">
                     <span @click="checkCoupon" style="cursor: pointer;">有可使用优惠卷</span>
                 </el-form-item>
                 </div>
@@ -103,12 +103,23 @@
                             inactive-color="#ff4949"></el-switch></span>
                 </el-form-item>
                 </div>
+                <div v-if="dialogForm.type==2">
                 <el-form-item label="优惠金额" prop="phone" v-if="dialogForm.coupon!=0">
                     <span style="cursor: pointer;" v-html="dialogForm.coupon"></span>
                 </el-form-item>
-                <el-form-item label="实收金额">
+                <el-form-item label="菜品抵扣金额" v-if="goodsPrice!=0">
+                    <span v-html="goodsPrice"></span>
+                </el-form-item>
+                </div>
+                <el-form-item label="实收金额" v-if="dialogForm.type==1">
                     <!--￥{{dialogForm.discountPrice}}-->
                     <el-input-number size="medium" :precision="2" v-model="dialogForm.discountPrice" ref="" :min="0"></el-input-number>
+                </el-form-item>
+                <el-form-item label="抹零金额" style="width: 340px" v-if="dialogForm.type==2">
+                    <el-input-number v-model="delPrice" @change="handleChange" :min="0"></el-input-number>
+                </el-form-item>
+                <el-form-item label="实收金额" v-if="dialogForm.type==2">
+                    <span>{{totalPrice}}</span>
                 </el-form-item>
                 <!--备注-->
                 <el-form-item label="备注"  style="width: 340px">
@@ -117,7 +128,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="success" :loading="saveLoading" @click="dialogFormSubmit('budget')">预结算</el-button>
+                <el-button type="success" :loading="ListLoading" @click="dialogFormSubmit('budget')">预结算</el-button>
                 <el-button type="primary" :loading="saveLoading" @click="dialogFormSubmit('dialogForm')">确 定</el-button>
             </div>
         </el-dialog>
@@ -255,7 +266,7 @@
         </el-dialog>
         <el-dialog title="选择优惠卷" :visible.sync="dialogCoupon" width="30%">
             <div class="coupon-box">
-                <div class="coupon-list" v-for="(item,index) in couponData">
+                <div class="coupon-list" v-for="(item,index) in couponData" v-bind:key='index'>
                     <div class="coupon-left">
                         <span>￥{{item.couponAmount}}</span>
                         <span>抵用卷</span>
@@ -263,11 +274,10 @@
                     <div class="coupon-center">
                         <h3>{{item.couponName}}</h3>
                         <p>有效期至:{{item.couponEndTime}}</p>
-                        <p v-if="item.superimposedSheets !=''">满{{item.superimposedSheets}}元使用</p>
                     </div>
                     <div class="coupon-right">
                         <div class="check">
-                            <el-checkbox :label="item.check" :disabled="item.isPrice" @change="checkCoupondata(item,index)">选择</el-checkbox>
+                            <el-checkbox :disabled="item.isPrice" @change="checkCoupondata(item,index)">选择</el-checkbox>
                         </div>
                     </div>
                 </div>
@@ -297,7 +307,7 @@
         requestUrl,
         requestCheckOrder,
         requestStoreOrderpaymentCheck,
-        requestDrogTwos, requestIntegralruleInfo,
+        requestDrogTwos, requestIntegralruleInfo, requestStoreDeskOrders,
     } from '../../api/api';
 
     export default {
@@ -331,7 +341,6 @@
                 dialogTreeTitle:'选择会员',
                 param: {
                     customerId:customerId,//门店ID
-
                 },
                 statusList:[],
                 param2: {
@@ -417,7 +426,16 @@
                 allIntergralrule:0,
                 useIntegrale:0,
                 deductionAcount:0,
+                ListLoading:false,
+                orderId:'',
                 value:0,
+                nowPrice:'',
+                goodsData:[],
+                delPrice:0,
+                goodsPrice:0,
+                discount:'',
+                fraction:0,
+                amountPrice:0,
                 rules:{
                  paymentMethod: [
                     { required: true, message: '请选择活动区域', trigger: 'change' },
@@ -428,15 +446,16 @@
         computed:{
             totalPrice:function() {
                 var total = 0;
-                if(this.dialogForm.coupon==0){
-                    total=this.dialogForm.discountPrice;
-                }else{
-                    total=this.dialogForm.discountPrice-this.dialogForm.coupon;
-                }
+                total=((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseInt(this.delPrice)-this.deductionAcount;
                 return total;
             },
         },
         methods: {
+            handleChange(){
+                if(this.delPrice==undefined){
+                    this.delPrice=0;
+                }
+            },
             pushOrder(formName){
                 let _this = this;
                 this.$refs[formName].validate((valid) => {
@@ -510,28 +529,33 @@
             },
             //是否使用积分
             isActive(val){
-                if(this.dialogForm.discountPrice>this.IntegralruleData.minUseAmount){
-                    if(val){
-                        this.dialogForm.discountPrice=this.dialogForm.discountPrice-this.IntegralruleData.amount;
-                        this.allIntergralrule=this.allIntergralrule-this.IntegralruleData.integral;
-                        this.useIntegrale=this.IntegralruleData.integral;
-                        this.deductionAcount=this.IntegralruleData.amount;
+                console.log(this.allIntergralrule<this.IntegralruleData.integral);
+                if(val){
+                    if(((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseInt(this.delPrice)-this.deductionAcount>this.IntegralruleData.minUseAmount && this.allIntergralrule>this.IntegralruleData.integral){
+                        if(val){
+                            this.allIntergralrule=this.allIntergralrule-this.IntegralruleData.integral;
+                            this.useIntegrale=this.IntegralruleData.integral;
+                            this.deductionAcount=this.IntegralruleData.amount;
+                        }else{
+                            this.allIntergralrule=this.allIntergralrule+this.IntegralruleData.integral;
+                            this.useIntegrale=0;
+                            this.deductionAcount=0;
+                        }
                     }else{
-                        this.dialogForm.discountPrice=this.dialogForm.discountPrice+this.IntegralruleData.amount;
-                        this.allIntergralrule=this.allIntergralrule+this.IntegralruleData.integral;
-                        this.useIntegrale=0;
-                        this.deductionAcount=0;
+                        this.$message({
+                            type:'error',
+                            message:'不满足积分使用规则',
+                        })
+                        this.value=0;
                     }
                 }else{
-                    this.$message({
-                        type:'error',
-                        message:'不满足积分使用规则',
-                    })
-                    this.value=0;
+                    this.allIntergralrule=this.allIntergralrule+this.IntegralruleData.integral;
+                    this.useIntegrale=0;
+                    this.deductionAcount=0;
                 }
-
             },
             checkCoupondata(data,index){
+                
                 this.couponData[index].check=!this.couponData[index].check;
             },
             confrimCoupon(){
@@ -540,19 +564,42 @@
                 for(let i=0;i<this.couponData.length;i++){
                     if(this.couponData[i].check){
                         this.couponDataList.push(this.couponData[i])
-                        couponPrice+=parseInt(this.couponData[i].couponAmount);
                     }
                 }
-                if(this.couponDataList.length>4){
-                    this.$message({
-                        type:'error',
-                        message:'只能选择四个优惠卷',
-                    })
-                    return false;
+                if(this.couponDataList.length==0){
+                    this.dialogForm.coupon=0;
+                    this.goodsPrice=0;
+                }else{
+                    for(let i=0;i<this.couponDataList.length;i++){
+                        if(this.couponDataList[i].type=='2'){
+                            this.goodsPrice=this.couponDataList[i].couponAmount;
+                            console.log(this.goodsPrice);
+                        }else{
+                            couponPrice+=parseInt(this.couponDataList[i].couponAmount);
+                            if(this.couponDataList.length>4){
+                                this.$message({
+                                    type:'error',
+                                    message:'只能选择四个优惠卷',
+                                })
+                                return false;
+                            }
+                            if(couponPrice>((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseInt(this.delPrice)-this.deductionAcount){
+                                this.$message({
+                                    type:'error',
+                                    message:'优惠金额不能大于结算金额',
+                                })
+                                return false;
+                            }
+                    
+
+                        }
+                    }
+                }
+                const item = this.couponDataList.findIndex( item => item.type == "2");
+                if(item==-1){
+                   this.goodsPrice=0;
                 }
                 this.dialogForm.coupon=couponPrice;
-                this.dialogForm.discountPrice=this.dialogForm.discountPrice-this.dialogForm.coupon;
-                this.showCoupon=2;
                 this.dialogCoupon=false;
             },
             spanClick(e){
@@ -566,11 +613,35 @@
             checkCoupon(){
                 this.dialogCoupon=true;
                 for(let i=0;i<this.couponData.length;i++){
-                    if(this.couponData[i].superimposedSheets>this.dialogForm.discountPrice || this.couponData[i].couponUploadStatus==1){
-                        this.couponData[i].isPrice=true;
+                    if(this.couponData[i].type=="1"){
+                        if(this.couponData[i].couponUploadStatus=='1'){
+                            this.couponData[i].isPrice=true;
+                        }else{
+                            this.couponData[i].isPrice=false;
+                        }
                     }
-
                 }
+                if(this.goodsData.length>=this.couponData.length){
+                    for(let i=0;i<this.goodsData.length;i++){
+                        for(let j=0;j<this.couponData.length;j++){
+                            if(this.goodsData[i].goodsId==this.couponData[j].couponId){
+                                this.couponData[j].isPrice=false;
+                            }
+                        }
+                    }
+                }else{
+                    for(let i=0;i<this.couponData.length;i++){
+
+                        for(let j=0;j<this.goodsData.length;j++){
+                            if(this.goodsData[j].goodsId==this.couponData[i].couponId){
+                                this.couponData[i].isPrice=false;
+                            }
+                        }
+
+                    }
+                }
+
+
             },
             dialogZhuanTaiFormSubmit(formName){
                 let _this = this;
@@ -741,25 +812,13 @@
             handleClickTreeAdd2(index,row){
                 let _this = this;
                 let discount = row.discount;
+                this.discount=row.discount;
+                console.log(this.discount);
                 let noDiscountAmount = parseFloat(this.dialogForm.noDiscountAmount);
                 let recPrice = parseFloat(this.dialogForm.recPrice);
                 let totalPrice = parseFloat(this.dialogForm.totalPrice);
                 this.allIntergralrule=row.integral;
-               if(row.amount-_this.dialogForm.discountPrice<=0){
-                   _this.dialogTreeFormVisible = false;
-                   _this.clientType="0"
-                   _this.dialogForm.memberId='';
-                   _this.dialogForm.discount2='';
-                   _this.dialogForm.discountPrice =  _this.dialogForm.totalPrice;
-                   this.$message({
-                       type: 'erroe',
-                       message: '余额不足请充值!',
-                       duration:3000,
-                       onClose:function(){
-                       }
-                   });
-
-               }else{
+               this.amountPrice=row.amount;
                    _this.dialogForm.name = row.name;
                    _this.dialogForm.phone=row.phone;
                    _this.dialogForm.memberId=row.id;
@@ -770,25 +829,37 @@
                    _this.smallRemoveZero=(discount*parseFloat(_this.dialogForm.discountPrice))-10;//最小抹零
                    _this.bigRemoveZero=discount*parseFloat(_this.dialogForm.discountPrice);//最大抹零
                    _this.dialogTreeFormVisible = false;
+                   this.couponData=[];
                    requestCouponInfo({memberId:row.id}).then((res)=>{
                        if(res.status==200){
                            this.couponData=res.data;
                            this.couponData.forEach((item)=>{
                                this.$set(item,'check',false)
-                               this.$set(item,'isPrice',false)
+                               this.$set(item,'isPrice',true)
                            })
-                           console.log(this.couponData);
                        }
+                       requestStoreDeskOrders({id:this.orderId}).then((res)=>{
+                           if(res.status==200){
+                               let goodsData=res.data.orders;
+                               for(let i=0;i<goodsData.length;i++){
+                                   for(let j=0;j<goodsData[i].detailList.length;j++){
+                                       this.goodsData.push(goodsData[i].detailList[j]);
+                                   }
+                               }
+                               console.log(this.goodsData);
+                           }
+                       })
 
                    })
                    requestIntegralruleInfo({type:2}).then((res)=>{
                        if(res.status==200){
                            this.IntegralruleData=res.data;
                        }
+
                    })
 
 
-               }
+               
             },
             initWebSocket(){ //初始化weosocket
                 let user = sessionStorage.getItem('user');
@@ -896,7 +967,7 @@
                         confirmButtonText:'确定',
                         cancelButtonText:'取消',
                     }).then(()=>{
-                        this.saveLoading=true;
+                        this.ListLoading=true;
                         let budgetData = {};
                         budgetData ={
                             deskId:this.dialogForm.deskId,
@@ -909,7 +980,7 @@
                                     message: '预结算成功!',
                                     duration:300,
                                 });
-                                this.saveLoading=false;
+                                this.ListLoading=false;
                             }else{
                                 this.saveLoading = false;
                                 this.dialogFormVisible = true;
@@ -917,19 +988,28 @@
                                     type: 'error',
                                     message: res.msg
                                 });
-                                this.saveLoading=false;
+                                this.ListLoading=false;
                             }
                         })
                     })
                 }else{
                     let that=this;
-                    if(this.dialogForm.paymentMethod==''){
+                    if(((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseInt(this.delPrice)-this.deductionAcount>this.amountPrice){
                         this.$message({
                             type:'error',
-                            message:'请选择支付方式',
-                            duration:1000,
+                            message:'会员余额不足,请充值'
                         })
                         return false;
+                    }
+                    if(this.dialogForm.type==1){
+                        if(this.dialogForm.paymentMethod==''){
+                            this.$message({
+                                type:'error',
+                                message:'请选择支付方式',
+                                duration:1000,
+                            })
+                            return false;
+                        }
                     }
                     this.$confirm('确定结算该桌已确认的订单吗？ 是否继续?', '提示', {
                         confirmButtonText: '确定',
@@ -968,15 +1048,16 @@
                                 }
                                 if(this.dialogForm.type==2){
                                     this.discount = this.dialogForm.discount;
+                                    this.fraction=parseInt(this.delPrice);
                                 }else{
+                                    this.fraction = ((totalPrice * this.discount + (1 - this.discount) * noDiscountAmount)-this.dialogForm.coupon).toFixed(2)-this.dialogForm.discountPrice;
                                     this.discount = parseFloat(this.dialogForm.discount/10).toFixed(2);
                                 }
                                 let id=arr.join(',');
 								let noDiscountAmount = parseFloat(this.dialogForm.noDiscountAmount);
 								let totalPrice = parseFloat(this.dialogForm.totalPrice);
-								let fraction = ((totalPrice * this.discount + (1 - this.discount) * noDiscountAmount)-this.dialogForm.coupon).toFixed(2)-this.dialogForm.discountPrice;
-								requestStoreOrdeCheckOut({deskId:this.dialogForm.deskId,discount:this.dialogForm.discount,memberId:this.dialogForm.memberId,remark: this.dialogForm.remark,fraction:fraction,type:this.dialogForm.type,customerId:this.dialogForm.customerId,paymentMethod:this.dialogForm.paymentMethod,
-                                    couponMoney:this.dialogForm.coupon,couponIds:id,useIntegrale:this.useIntegrale,deductionAcount:this.deductionAcount
+								requestStoreOrdeCheckOut({deskId:this.dialogForm.deskId,discount:this.dialogForm.discount,memberId:this.dialogForm.memberId,remark: this.dialogForm.remark,fraction:this.fraction,type:this.dialogForm.type,customerId:this.dialogForm.customerId,paymentMethod:this.dialogForm.paymentMethod,
+                                    couponMoney:this.dialogForm.coupon,couponIds:id,useIntegrale:this.useIntegrale,deductionAcount:this.deductionAcount,giveGoodsMoney:this.goodsPrice,
                                 }).then(res => {
 								    if(res.status == 200){
 								        this.$message({
@@ -1010,8 +1091,16 @@
             //点击结算按钮
             checkOut(row){
                 this.value=0;
+                this.orderId=row.id;
                 this.dialogForm.type="1";
-                this.buttonPu='';
+                this.buttonPu='primary';
+                this.dialogForm.discount='';
+                this.buttonHui='';
+                this.couponDataList=[];
+                this.goodsPrice=0;
+                this.delPrice=0;
+                this.goodsData=[];
+                this.dialogForm.coupon=0;
                 this.dialogFormTitle = '第'+row.deskNo+'号桌结算';
                 requestStoreOrdeCheckOrder({deskId:row.id}).then(res => {
 					console.log(res);

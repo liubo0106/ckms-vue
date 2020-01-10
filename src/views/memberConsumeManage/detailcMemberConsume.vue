@@ -20,9 +20,19 @@
                     </template>
                 </el-table-column>
                 <el-table-column align="center" header-align='center' prop="discount" label="折扣" width="60"></el-table-column>
+                <el-table-column align="center" header-align="center" prop="deductionAcount" label="积分抵扣">
+                    <template slot-scope="scope">
+                      {{scope.row.deductionAcount == null ? 0:scope.row.deductionAcount.toFixed(2)}}
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" header-align="center" prop="couponMoney" label="优惠卷抵扣">
+                    <template slot-scope="scope">
+                      {{scope.row.couponMoney == null ? 0 :scope.row.couponMoney.toFixed(2)}}
+                    </template>
+                </el-table-column>
                 <el-table-column align="center" header-align='center' prop="discountPrice" label="实收金额" width="60">
                     <template slot-scope="scope">
-                        {{scope.row.discountPrice == null ? '' :scope.row.discountPrice.toFixed(2)}}
+                        {{scope.row.discountPrice == null ? 0 :scope.row.discountPrice.toFixed(2)}}
                     </template>
                 </el-table-column>
                 <el-table-column align="center" header-align='center' prop="customerName" label="门店" ></el-table-column>
@@ -30,7 +40,7 @@
                 <el-table-column align="center" header-align='center' prop="createTime" label="订单日期" width="160"></el-table-column>
                 <el-table-column align="center" header-align='center' label="操作" width="80">
                     <template slot-scope="scope">
-                        <el-button  size="mini" @click="handleClick(scope.$index, scope.row, 'detail')">详情</el-button>
+                        <el-button  size="mini" @click="handleClick(scope.$index, scope.row.orders[0], 'detail')">详情</el-button>
                         <!--<el-button v-if='scope.row.status == 0' size="mini" type="danger" @click="handleClick(scope.$index, scope.row, 'delete')">删除</el-button>
                         <el-button v-if='scope.row.status == 0' size="mini" type="warning" @click="handleClick(scope.$index, scope.row, 'ok')">确认</el-button>-->
                     </template>
@@ -79,7 +89,7 @@
                 orderId:sessionStorage.getItem('mcId'),
                 orderDetail:{},
                 detailList:[],
-                tableData: null,
+                tableData: [],
                 param: {
                     content:"",
                     pageNo:1,
@@ -108,16 +118,8 @@
                     console.log(res);
                     if(res.status == 200){
                         _this.remark=res.data.remark;
-                        let data = res.data.orders;
-                        if(data && data.length>0){
-                            _this.tableData = data;
-
-
-                           // _this.totalNum = parseInt(res.data.totalNum);
-                        }else{
-                            _this.tableData = [];
-                            //_this.totalNum = 0;
-                        }
+                        this.tableData.push(res.data);
+                    
 
                     }else{
                         this.$message({

@@ -34,7 +34,7 @@
                             <el-select v-model="editForm.money" placeholder="请选择" @change="changeMoney" clearable :disabled="disabled3">
                                 <el-option v-for="item in moneyList" :label="item.money"   :value="item.money"></el-option>
                             </el-select>
-                            <el-button  :icon="moneyType==0 ? 'el-icon-plus':'el-icon-minus'"   circle @click="handleClick('', '', 'moneyType')"></el-button>
+<!--                            <el-button  :icon="moneyType==0 ? 'el-icon-plus':'el-icon-minus'"   circle @click="handleClick('', '', 'moneyType')"></el-button>-->
                         </el-form-item>
                         <el-form-item label="自定义金额" prop="money2" style="width: 320px" v-if="moneyType==1">
                             <el-input placeholder='请输入' v-model="editForm.money2" :maxlength="11" @change="changeCustomMoney"></el-input>

@@ -27,7 +27,7 @@
                         <!--<el-form-item  :label="套餐名称" :label-width="formLabelWidth" prop="productInfoId">
                             <el-input v-model="editForm.name" autocomplete="off" style="width: 216px;"></el-input>
                         </el-form-item>-->
-                        <el-form-item label="套餐名称"   :label-width="formLabelWidth" style="width: 316px;">
+                        <el-form-item label="套餐名称" prop="name" :label-width="formLabelWidth" style="width: 316px;">
                             <el-input v-model="editForm.name"  style="width: 216px;"></el-input>
                         </el-form-item>
 
@@ -95,7 +95,7 @@
             </el-form>
             <!--配菜明细列表-->
             <div class="contentBody" v-if="editForm.isSide==0 && id">
-                <el-form label-width="60px" class="demo-form-inline">
+                <el-form label-width="60px" class="demo-form-inline" v-if="type!=1">
                     <el-row :gutter="20">
                         <el-col :span="4">
                             <el-form-item label-width="0">
@@ -313,7 +313,7 @@
                     num: [
                         { required: true, message: '请输入排序号', trigger: 'blur' },
                     ],
-                    productInfoId: [
+                    name: [
                         { required: true, message: '请输入套餐名称', trigger: 'blur' },
                     ],
                     kind:[
@@ -442,27 +442,7 @@
                 }
             }
         },
-        created() {
-          this.getData();
-        },
         methods: {
-            getData(){
-
-              let dataDetail=JSON.parse(sessionStorage.getItem('restaurantDetail'));
-              if(dataDetail!=null){
-                  this.editForm.num=dataDetail.num;
-                  this.editForm.categoryId=dataDetail.categoryId;
-                  this.editForm.name=dataDetail.name;
-                  this.editForm.kind=dataDetail.kind;
-                  this.editForm.isSale=dataDetail.isSale;
-                  this.editForm.isDiscount=dataDetail.isDiscount;
-                  this.editForm.price=dataDetail.price;
-                  this.id=dataDetail.id;
-                  this.type=1;
-                  this.getAjaxList();
-              }
-
-            },
             indexMethod(index) {
                 return (this.paramTree3.pageNo - 1) * this.paramTree3.pageSize + index + 1;
             },
@@ -705,7 +685,7 @@
             //门店商品信息详情
             requestGoodsInfo(){
                 let _this = this;
-
+                this.type=sessionStorage.getItem('type');
                 requestRestaurantGoodsInfo({id:this.id}).then(res => {
                     if(res.status == 200){
                         let data = res.data;
