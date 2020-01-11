@@ -994,12 +994,14 @@
                     })
                 }else{
                     let that=this;
-                    if(((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseInt(this.delPrice)-this.deductionAcount>this.amountPrice){
-                        this.$message({
-                            type:'error',
-                            message:'会员余额不足,请充值'
-                        })
-                        return false;
+                    if(this.dialogForm.type==2){
+                        if(((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseInt(this.delPrice)-this.deductionAcount>this.amountPrice){
+                            this.$message({
+                                type:'error',
+                                message:'会员余额不足,请充值'
+                            })
+                            return false;
+                        }
                     }
                     if(this.dialogForm.type==1){
                         if(this.dialogForm.paymentMethod==''){
