@@ -194,7 +194,7 @@
         </el-dialog>
 
         <!--合并桌子-->
-        <el-dialog title="合并" :visible.sync="dialogZhuanTaiFormVisible" width="30%">
+        <el-dialog title="合并" :visible.sync="dialogHebinFormVisible" width="30%">
             <el-form :model="dialogZhuanTaiForm" :rules="rules" ref="dialogZhuanTaiForm" label-width="120px">
                 <el-form-item label="当前桌号">
                     {{dialogZhuanTaiForm.oldDeskNo}}
@@ -206,7 +206,7 @@
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogZhuanTaiFormVisible = false">取 消</el-button>
+                <el-button @click="dialogHebinFormVisible = false">取 消</el-button>
                 <el-button type="primary" :loading="saveLoading" @click="pushOrder('dialogZhuanTaiForm')">确 定</el-button>
             </div>
         </el-dialog>
@@ -337,6 +337,7 @@
                 showCoupon:1,
                 buttonHui:'',
                 tableData: null,
+                dialogHebinFormVisible:false,
                 dialogTreeFormVisible:false,//会员弹出层
                 dialogTreeTitle:'选择会员',
                 param: {
@@ -482,7 +483,7 @@
                                         duration:300,
                                         onClose:function(){
                                             _this.saveLoading = false;
-                                            _this.dialogZhuanTaiFormVisible = false;
+                                            _this.dialogHebinFormVisible = false;
                                             _this.getAjaxList();
                                             _this.getStatusAjaxList();
                                         }
@@ -512,7 +513,7 @@
                     this.dialogZhuanTaiForm.deskId = '';
                     this.dialogZhuanTaiForm.oldDeskId = row.id;
                     this.dialogZhuanTaiForm.oldDeskNo = row.deskNo;
-                    this.dialogZhuanTaiFormVisible = true;
+                    this.dialogHebinFormVisible = true;
                 }
                 if(type == 'zhuantai'){
                     this.dialogZhuanTaiForm.deskId = '';
