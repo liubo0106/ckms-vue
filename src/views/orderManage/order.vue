@@ -86,7 +86,7 @@
                 <el-form-item label="会员电话" prop="phone" v-if="dialogForm.type==2">
                     <el-input placeholder='请输入' v-model="dialogForm.phone" :maxlength="25" disabled style="width: 218px">{{dialogForm.phone}}</el-input>
                 </el-form-item>
-                <div v-if="dialogForm.type==2">
+                <div v-if="dialogForm.type==2 && couponData.length!=0">
                 <el-form-item label="选择优惠卷">
                     <span @click="checkCoupon" style="cursor: pointer;">有可使用优惠卷</span>
                 </el-form-item>
@@ -116,7 +116,7 @@
                     <el-input-number size="medium" :precision="2" v-model="dialogForm.discountPrice" ref="" :min="0"></el-input-number>
                 </el-form-item>
                 <el-form-item label="抹零金额" style="width: 340px" v-if="dialogForm.type==2">
-                    <el-input-number v-model="delPrice" @change="handleChange" :min="0"></el-input-number>
+                    <el-input-number v-model="delPrice" :precision="2" @change="handleChange" :min="0"></el-input-number>
                 </el-form-item>
                 <el-form-item label="实收金额" v-if="dialogForm.type==2">
                     <span>{{totalPrice}}</span>
@@ -447,7 +447,7 @@
         computed:{
             totalPrice:function() {
                 var total = 0;
-                total=((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseInt(this.delPrice)-this.deductionAcount;
+                total=((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-this.delPrice-this.deductionAcount;
                 return total;
             },
         },
@@ -820,6 +820,7 @@
                 let totalPrice = parseFloat(this.dialogForm.totalPrice);
                 this.allIntergralrule=row.integral;
                this.amountPrice=row.amount;
+            
                    _this.dialogForm.name = row.name;
                    _this.dialogForm.phone=row.phone;
                    _this.dialogForm.memberId=row.id;
