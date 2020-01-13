@@ -622,7 +622,6 @@
                                     duration:1000,
                                 })
                                 _this.saveLoading = false;
-                                return false;
                             }else{
                                 this.$message({
                                 type: 'success',
@@ -634,9 +633,10 @@
                                     _this.param2.pid=res.data.id;
                                     _this.getAjaxGroupInfo();
                                     _this.getAjaxList();
-                                    _this.saveLoading = false;
-                                }
+                                },
+                                
                             });
+                             _this.saveLoading = false;
                             }
                             
                             

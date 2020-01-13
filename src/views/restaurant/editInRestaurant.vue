@@ -106,7 +106,7 @@
                 </el-form>
                 <el-table :data="tableData" border>
                     <el-table-column align="center" header-align='center' type="index" label="序号" width="80"></el-table-column>
-                    <el-table-column align="center" header-align='center' prop="showName" label="菜品名称"></el-table-column>
+                    <el-table-column align="center" header-align='center' prop="name" label="菜品名称"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="serialNo" label="菜品编号"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="price" label="单价" width="140"></el-table-column>
                     <el-table-column align="center" header-align='center' prop="number" label="数量" width="180"></el-table-column>
