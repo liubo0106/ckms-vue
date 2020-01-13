@@ -36,7 +36,7 @@
                                     <el-radio-group v-model="couponData.sendingMethod" @change="checkTime">
                                         <el-radio label="1">每周</el-radio>
                                         <!--                                <el-radio label="2">每月</el-radio>-->
-                                        <!--<el-radio label="3">自定义时间</el-radio>-->
+                                        <el-radio label="3">自定义时间</el-radio>
                                     </el-radio-group>
                                 </el-form-item>
                                 <el-form-item label="选择时间" v-if="showTime">
