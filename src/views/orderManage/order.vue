@@ -1054,8 +1054,9 @@
                                     this.discount = this.dialogForm.discount;
                                     this.fraction=parseInt(this.delPrice);
                                 }else{
-                                    this.fraction = ((parseFloat(this.dialogForm.totalPrice) * this.discount + (1 - this.discount) *parseFloat(this.dialogForm.noDiscountAmount))-this.dialogForm.coupon).toFixed(2)-this.dialogForm.discountPrice;
                                     this.discount = parseFloat(this.dialogForm.discount/10).toFixed(2);
+                                    this.fraction = ((parseFloat(this.dialogForm.totalPrice) * this.discount + (1 - this.discount) *parseFloat(this.dialogForm.noDiscountAmount))-this.dialogForm.coupon).toFixed(2)-this.dialogForm.discountPrice;
+                                    
                                 }
                                 let id=arr.join(',');
 								requestStoreOrdeCheckOut({deskId:this.dialogForm.deskId,discount:this.dialogForm.discount,memberId:this.dialogForm.memberId,remark: this.dialogForm.remark,fraction:this.fraction,type:this.dialogForm.type,customerId:this.dialogForm.customerId,paymentMethod:this.dialogForm.paymentMethod,
