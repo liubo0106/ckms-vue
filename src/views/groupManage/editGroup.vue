@@ -626,7 +626,7 @@
                             }
                             this.$message({
                                 type: 'success',
-                                message: '操作成功!',
+                                message: res.msg,
                                 duration:300,
                                 onClose:function(){
                                     sessionStorage.setItem('groupId',res.data.id);
