@@ -623,8 +623,8 @@
                                 })
                                 _this.saveLoading = false;
                                 return false;
-                            }
-                            this.$message({
+                            }else{
+                                this.$message({
                                 type: 'success',
                                 message: res.msg,
                                 duration:300,
@@ -637,6 +637,9 @@
                                     _this.saveLoading = false;
                                 }
                             });
+                            }
+                            
+                            
                         });
                     } else {
                         return false;
