@@ -26,7 +26,7 @@
                 <el-table-column align="left" header-align='center' label="操作" width="360">
                     <template slot-scope="scope">
                         <el-button style="background-color: #f37276;color: #fff;border: none;" icon="el-icon-document" size="mini" @click="handleClick(scope.$index, scope.row, 'detail')">查看</el-button>
-                        <el-button style="background-color: #fe8d29;color: #fff;border: none;" icon="el-icon-delete" v-if="scope.row.status != 2"  size="mini" type="danger" @click="handleClick(scope.$index, scope.row, 'delete')">删除</el-button>
+                       <!-- <el-button style="background-color: #fe8d29;color: #fff;border: none;" icon="el-icon-delete" v-if="scope.row.status != 2"  size="mini" type="danger" @click="handleClick(scope.$index, scope.row, 'delete')">删除</el-button>-->
                         <el-button icon="el-icon-success" style="background-color: #6faffd;color: #fff;border: none;" v-if="scope.row.status == 0" size="mini" type="danger" @click="handleClick(scope.$index, scope.row, 'ok')">确认</el-button>
 <!--                        <el-button icon="el-icon-sold-out" style="background-color: #847ffe;color: #fff;border: none;" v-if="scope.row.status == 1" size="mini" type="warning" @click="handleClick(scope.$index, scope.row, 'pay')">结账</el-button>-->
                         <el-button icon="el-icon-printer" style="background-color: #28db67;color: #fff;border: none;" size="mini" type="success" @click="handleClick(scope.$index, scope.row, 'print')">出票</el-button>

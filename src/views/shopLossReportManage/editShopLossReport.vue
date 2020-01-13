@@ -17,7 +17,7 @@
                     <el-form-item label="总量"  label-width="80px" style="width: 316px">
                         <el-input placeholder='请输入' v-model="editForm.totalNumber" :maxlength="200" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="报损类型"  label-width="80px" style="width: 316px">
+                    <el-form-item label="报损类型"  label-width="80px" style="width: 316px" prop="lossType">
                         <el-select v-model="editForm.lossType">
                             <el-option label="物品损坏" value="1"></el-option>
                             <el-option label="物品遗失" value="2"></el-option>
@@ -188,6 +188,9 @@
                     dateTime: [
                         { required: true, message: '请选择报损日期', trigger: 'blur' },
                     ],
+                    lossType:[
+                        {required: true, message: '请选择报损类型', trigger: 'change'}
+                    ]
                 },
                 searchForm: {
                     name: '',

@@ -29,7 +29,7 @@
                         <el-option label="库房报损" value="1"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="报损类型">
+                <el-form-item label="报损类型" prop="lossType">
                     <el-select v-model="editForm.lossType" placeholder="请选择报损类型" style="width: 220px">
                         <el-option label="物品损坏" value="1"></el-option>
                         <el-option label="物品遗失" value="2"></el-option>
@@ -326,6 +326,9 @@
                     options: [
                         { required: true, message: '请选报损类型', trigger: 'change' }
                     ],
+                    lossType:[
+                        { required: true, message: '请选报损类别', trigger: 'change' }
+                    ]
                 },
                 headers: {'sessionId': sessionStorage.getItem('sessionId')},
                 LogisticsList:[],

@@ -612,6 +612,7 @@
             },
             //选择优惠卷
             checkCoupon(){
+                this.dialogForm.coupon=0;
                 this.dialogCoupon=true;
                 for(let i=0;i<this.couponData.length;i++){
                     if(this.couponData[i].type=="1"){
