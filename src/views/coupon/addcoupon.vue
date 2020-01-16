@@ -67,7 +67,7 @@
                         </el-col>
                     </el-row>
                 </el-tab-pane>
-                <!--<el-tab-pane label="赠送菜品设置" name="second">
+                <el-tab-pane label="赠送菜品设置" name="second">
                         <el-row style="margin-top: 20px">
                             <el-col :span="20">
                                 <el-form label-width="80px">
@@ -84,8 +84,7 @@
                                 </el-form>
                             </el-col>
                         </el-row>
-
-                </el-tab-pane>-->
+                </el-tab-pane>
             </el-tabs>
         </div>
         <el-dialog title="选择菜品" :visible.sync="dialogVisible" width="50%" >
@@ -200,7 +199,6 @@
             }
         },
         created() {
-            this.getGoodsList();
         },
         methods: {
             getGoodsPage(){

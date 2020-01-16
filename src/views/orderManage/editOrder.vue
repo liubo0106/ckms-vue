@@ -189,10 +189,12 @@
         <!--订单明细-->
         <div class="contentBody"  v-if="doType == 'edit'">
             <el-collapse v-model="activeName">
-                <el-collapse-item v-for="sd in storeDeskOrdersList" :name="sd.id">
+                <el-collapse-item v-for="(sd,index) in storeDeskOrdersList" :name="sd.id" v-bind:key="index">
                     <template slot="title">
-                        <el-button type="primary" v-if="sd.status==1" style="margin-right: 20px" @click="handleClickPrint(sd.id)" :loading="sd.id == saveLoadingId" size="small">出票</el-button>
+                        <el-button type="primary" v-if="sd.status==1" style="margin-right: 5px" @click="handleClickPrint(sd.id)" :loading="sd.id == saveLoadingId" size="small">出票</el-button>
+                        <el-button v-if="sd.status==1" :loading="deleteOrderShow"  @click="deleteOrder(sd.id)" size="small" style="margin-right:10px;">取消订单</el-button>
                         <el-button type="success" v-if="sd.status==0" style="margin-right: 20px" @click="handleClickEnsure(sd.id)" :loading="sd.id == saveLoadingId" size="small">确认</el-button>
+                        
                         订单号：{{sd.orderNo}}，用餐人数：{{sd.people}}，状态：{{sd.statusName}}，消费总额：{{sd.totalPrice}}，备注：{{sd.remark}}
                     </template>
                     <el-table :data="sd.detailList" max-height="400">
@@ -218,7 +220,7 @@
                             <template slot-scope="scope">
                                 <el-button  v-if="isManager==1 && sd.status==1 && scope.row.number > 0" size="mini" type="danger" @click="handleFreeClick(scope.$index, scope.row, 'retreat')">退菜</el-button>
                                 <el-button  v-if="isManager==1 && sd.status==0" size="mini" type="danger" @click="handleFreeClick(scope.$index, scope.row, 'delete')">删除</el-button>
-                                <el-button v-if="scope.row.isFree==1" type="warning" size="small" @click="handleFreeClick(scope.$index, scope.row, 'isFree')">赠送</el-button>
+                                <el-button v-if="scope.row.isFree==1 && scope.row.number>0" type="warning" size="small" @click="handleFreeClick(scope.$index, scope.row, 'isFree')">赠送</el-button>
                                 <el-button  v-if="scope.row.isFree==0" size="small" @click="handleFreeClick(scope.$index, scope.row, 'isClose')">取消赠送</el-button>
                             </template>
                         </el-table-column>
@@ -350,6 +352,7 @@
         requestTreeList,
         requestSearchMenuType,
         requestRestaurantFlavor,
+        requestDeleteOrder,
     } from '../../api/api';
 
     export default {
@@ -411,6 +414,7 @@
                 storeDeskOrdersList:[],//订单列表
                 orderDetailList:[],
                 flavorList:[],//口味列表
+                deleteOrderShow:false,
                 dialogTableVisibleData:false,
 
                 //列表
@@ -474,6 +478,28 @@
         }
         },
         methods: {
+            //取消订单
+            deleteOrder(id){
+                this.deleteOrderShow=true;
+                requestDeleteOrder({orderId:id}).then((res)=>{
+                    if(res.status==200){
+                        this.$message({
+                            type:'success',
+                            message:res.msg,
+                        })
+                        this.deleteOrderShow=false;
+                        this.getStoreDeskOrderList();
+                        this.activeName= [id];
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:res.message,
+                        })
+                        this.deleteOrderShow=false;
+                        this.activeName=[id];
+                    }
+                })
+            },
             //搜索方法
             handleClickData(tab, event) {
                 if(tab.name==1){

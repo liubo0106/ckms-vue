@@ -264,7 +264,7 @@
                 <el-button type="primary" :loading="saveLoading" @click="dialogIsOkFormSubmit">确 定</el-button>
             </div>
         </el-dialog>
-        <el-dialog title="选择优惠卷" :visible.sync="dialogCoupon" width="30%">
+        <el-dialog title="选择优惠卷" :visible.sync="dialogCoupon" width="30%" @close="confrimCoupon">
             <div class="coupon-box">
                 <div class="coupon-list" v-for="(item,index) in couponData" v-bind:key='index'>
                     <div class="coupon-left">
@@ -627,6 +627,7 @@
                     for(let i=0;i<this.goodsData.length;i++){
                         for(let j=0;j<this.couponData.length;j++){
                             if(this.goodsData[i].goodsId==this.couponData[j].couponId){
+                                console.log(123);
                                 this.couponData[j].isPrice=false;
                             }
                         }
@@ -636,6 +637,7 @@
 
                         for(let j=0;j<this.goodsData.length;j++){
                             if(this.goodsData[j].goodsId==this.couponData[i].couponId){
+                                console.log(123);
                                 this.couponData[i].isPrice=false;
                             }
                         }

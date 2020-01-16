@@ -19,7 +19,7 @@
                     <el-col :span="4">
                         <el-form-item label-width="0">
                             <el-button icon="el-icon-search" circle @click.native.prevent="onSearch" native-type="submit"></el-button>
-                            <el-button icon="el-icon-plus" circle @click="handleClick('', '', 'add')"></el-button>
+                            <!--<el-button icon="el-icon-plus" circle @click="handleClick('', '', 'add')"></el-button>-->
                         </el-form-item>
                     </el-col>
                 </el-row>

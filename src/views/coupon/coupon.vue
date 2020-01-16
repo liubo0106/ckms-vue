@@ -71,7 +71,7 @@
                             :total="totalNum">
                     </el-pagination>
                 </el-tab-pane>
-               <!-- <el-tab-pane label="赠送菜品列表" name="second">
+               <el-tab-pane label="赠送菜品列表" name="second">
                     <el-form :model="param" label-width="90px" class="demo-form-inline" label-position="left">
                         <el-row :gutter="20">
                             <el-col :span="10">
@@ -107,7 +107,6 @@
                             :total="totalNumGoods">
                     </el-pagination>
                 </el-tab-pane>
-                -->
             </el-tabs>
             <el-dialog
                     title="优惠卷详情"
