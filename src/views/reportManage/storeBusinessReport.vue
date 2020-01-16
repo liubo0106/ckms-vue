@@ -95,7 +95,7 @@
                     }
                 });
 
-                if(sessionStorage.getItem('customerId')!='null'){
+                if(sessionStorage.getItem('customerId')!='null' && sessionStorage.getItem('customerId')!=''){
                     this.searchForm.customerId=sessionStorage.getItem('customerId');
                     this.isShow=true;
                 }else{
