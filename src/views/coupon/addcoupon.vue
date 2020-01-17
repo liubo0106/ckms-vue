@@ -116,7 +116,7 @@
             </el-pagination>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 认 选 择</el-button>
+                <el-button type="primary" @click="confirmData">确 认 选 择</el-button>
             </span>
         </el-dialog>
     </section>
@@ -210,7 +210,24 @@
                 this.subGoodsData.couponAmount=data.price;
                 this.subGoodsData.id=data.id;
             },
+            confirmData(){
+                if(this.subGoodsData.id==''){
+                    this.$message({
+                        type:'error',
+                        message:'请选择菜品',
+                    });
+                    return false;
+                }
+            },
             subGoods(){
+                if(this.subGoodsData.id==''){
+                    this.$message({
+                        type:'error',
+                        message:'请选择菜品',
+                    })
+                    this.isDisplay=false;
+                    return false;
+                }
                 requestGoodsSave(this.subGoodsData).then((res)=>{
                    if(res.status==200){
                        this.$message({
