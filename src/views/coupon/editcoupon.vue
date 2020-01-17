@@ -74,6 +74,7 @@
     export default {
         name: "addcoupon",
         data() {
+            
             return {
                 couponData:{
                     id:'',

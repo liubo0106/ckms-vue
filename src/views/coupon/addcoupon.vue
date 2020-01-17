@@ -72,10 +72,7 @@
                             <el-col :span="20">
                                 <el-form label-width="80px">
                                 <el-form-item label="选择菜品">
-                                    <el-input placeholder="选择菜品"  v-model="subGoodsData.couponName" @focus="checkGoods"></el-input>
-                                </el-form-item>
-                                <el-form-item label="菜品价格">
-                                     <el-input placeholder="菜品价格" v-model="subGoodsData.couponAmount"></el-input>
+                                    <el-input placeholder="选择菜品" :disabled="isDisplay"  v-model="subGoodsData.couponName" @focus="checkGoods"></el-input>
                                 </el-form-item>
                                 <el-form-item>
                                      <el-button type="primary" :disabled="disBtn" @click="subGoods()">立即创建</el-button>
@@ -98,17 +95,10 @@
             </el-form>
             <el-table :data="tableData" border>
                 <el-table-column label="序号" type="index" header-align="center" align="center"></el-table-column>
+                <el-table-column label="编号" header-align="cnter" align="center" prop="serialNo"></el-table-column>
                 <el-table-column prop="name" label="商品名称" header-align="center" align="center"></el-table-column>
-                <el-table-column prop="price" label="价格" header-align="center" align="center"></el-table-column>
-                <el-table-column label="类型" prop="typeName" header-align="center" align="center"></el-table-column>
-                <el-table-column label="菜品种类" header-align="center" align="center">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.kind == 0">其他</span>
-                        <span v-if="scope.row.kind == 1">炒锅涮锅</span>
-                        <span v-if="scope.row.kind == 2">烧烤</span>
-                        <span v-if="scope.row.kind == 3">凉菜</span>
-                    </template>
-                </el-table-column>
+                <el-table-column prop="standard" label="单位" header-align="center" align="center"></el-table-column>
+                <el-table-column label="金额" prop="price" header-align="center" align="center"></el-table-column>
                 <el-table-column label="操作" header-align="center" align="center">
                     <template slot-scope="scope">
                         <el-radio v-model="goodsId" :label="scope.row.id" @change="checkGoodsType(scope.row)">选择菜品</el-radio>
@@ -133,7 +123,7 @@
 </template>
 
 <script>
-    import {requestCouponSave,requestGoodsSave} from '../../api/api.js'
+    import {requestCouponSave,requestGoodsSave,requestSearchGroupList} from '../../api/api.js'
     import {requestSearchGoods} from "../../api/api";
     export default {
         name: "addcoupon",
@@ -157,6 +147,7 @@
                 dialogVisible:false,
                 showDate:false,
                 disBtn:false,
+                isDisplay:false,
                 activeName:sessionStorage.getItem('activeName'),
                 rules: {
                     couponName: [
@@ -182,11 +173,12 @@
                     ]
                 },
                 goodsData:{
-                    pageSize:15,
-                    pageNo:1,
-                    status:1,
-                    name:'',
-                    isDelete:1,
+                    checkChild: "all",
+                    deptId: "",
+                    isDelete: "",
+                    name: "",
+                    pageNo: 1,
+                    pageSize: 10,
                 },
                 subGoodsData:{
                     couponName:'',
@@ -202,7 +194,7 @@
         },
         methods: {
             getGoodsPage(){
-                requestSearchGoods(this.goodsData).then((res)=>{
+                requestSearchGroupList(this.goodsData).then((res)=>{
                     let data = res.data.items;
                     if(data && data.length>0){
                         this.tableData = data;
@@ -241,6 +233,7 @@
             },
             checkGoods(){
               this.dialogVisible=true;
+              this.isDisplay=true;
               this.getGoodsPage();
             },
             handleSizeChange(val){

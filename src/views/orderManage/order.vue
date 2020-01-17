@@ -86,7 +86,7 @@
                 <el-form-item label="会员电话" prop="phone" v-if="dialogForm.type==2">
                     <el-input placeholder='请输入' v-model="dialogForm.phone" :maxlength="25" disabled style="width: 218px">{{dialogForm.phone}}</el-input>
                 </el-form-item>
-                <div v-if="dialogForm.type==2 && couponData.length!=0">
+                <div v-if="dialogForm.type==2 && couponData.length!=0 && goodsData.length!=0">
                 <el-form-item label="选择优惠卷">
                     <span @click="checkCoupon" style="cursor: pointer;">有可使用优惠卷</span>
                 </el-form-item>
@@ -264,7 +264,7 @@
                 <el-button type="primary" :loading="saveLoading" @click="dialogIsOkFormSubmit">确 定</el-button>
             </div>
         </el-dialog>
-        <el-dialog title="选择优惠卷" :visible.sync="dialogCoupon" width="30%" @close="confrimCoupon">
+        <el-dialog title="选择优惠卷" :visible.sync="dialogCoupon" width="30%" :show-close="false">
             <div class="coupon-box">
                 <div class="coupon-list" v-for="(item,index) in couponData" v-bind:key='index'>
                     <div class="coupon-left">
@@ -282,8 +282,9 @@
                     </div>
                 </div>
             </div>
-            <div class="footer">
+            <div slot="footer">
                 <el-button type="primary" @click="confrimCoupon()">确认</el-button>
+                <el-button @click="dialogCoupon=false">关闭</el-button>
             </div>
         </el-dialog>
     </section>
@@ -447,7 +448,7 @@
         computed:{
             totalPrice:function() {
                 var total = 0;
-                total=((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-this.delPrice-this.deductionAcount;
+                total=((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseFloat(this.delPrice)-this.deductionAcount;
                 return total;
             },
         },
@@ -530,9 +531,8 @@
             },
             //是否使用积分
             isActive(val){
-                console.log(this.allIntergralrule<this.IntegralruleData.integral);
                 if(val){
-                    if(((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseInt(this.delPrice)-this.deductionAcount>this.IntegralruleData.minUseAmount && this.allIntergralrule>this.IntegralruleData.integral){
+                    if(((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseFloat(this.delPrice)-this.deductionAcount>this.IntegralruleData.minUseAmount && this.allIntergralrule>this.IntegralruleData.integral){
                         if(val){
                             this.allIntergralrule=this.allIntergralrule-this.IntegralruleData.integral;
                             this.useIntegrale=this.IntegralruleData.integral;
@@ -573,10 +573,14 @@
                 }else{
                     for(let i=0;i<this.couponDataList.length;i++){
                         if(this.couponDataList[i].type=='2'){
-                            this.goodsPrice=this.couponDataList[i].couponAmount;
-                            console.log(this.goodsPrice);
+                            for(let j=0;j<this.goodsData.length;j++){
+                                if(this.goodsData[j].productInfoId==this.couponDataList[i].couponId){
+                                    this.goodsPrice=this.goodsData[j].price;
+                                }
+                            }
+
                         }else{
-                            couponPrice+=parseInt(this.couponDataList[i].couponAmount);
+                            couponPrice+=parseFloat(this.couponDataList[i].couponAmount);
                             if(this.couponDataList.length>4){
                                 this.$message({
                                     type:'error',
@@ -584,17 +588,19 @@
                                 })
                                 return false;
                             }
-                            if(couponPrice>((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseInt(this.delPrice)-this.deductionAcount){
-                                this.$message({
-                                    type:'error',
-                                    message:'优惠金额不能大于结算金额',
-                                })
-                                return false;
-                            }
+                            
                     
 
                         }
                     }
+                }
+                let price=((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-parseFloat(this.delPrice)-this.deductionAcount;
+                if(couponPrice>price){
+                    this.$message({
+                        type:'error',
+                        message:'优惠金额不能大于结算金额',
+                    })
+                    return false;
                 }
                 const item = this.couponDataList.findIndex( item => item.type == "2");
                 if(item==-1){
@@ -604,11 +610,9 @@
                 this.dialogCoupon=false;
             },
             spanClick(e){
-              console.log(e);
             },
             changePlay(val){
                 this.dialogForm.paymentMethod=val;
-                console.log(this.dialogForm.paymentMethod);
             },
             //选择优惠卷
             checkCoupon(){
@@ -626,18 +630,16 @@
                 if(this.goodsData.length>=this.couponData.length){
                     for(let i=0;i<this.goodsData.length;i++){
                         for(let j=0;j<this.couponData.length;j++){
-                            if(this.goodsData[i].goodsId==this.couponData[j].couponId){
-                                console.log(123);
+                            if(this.goodsData[i].productInfoId==this.couponData[j].couponId){
                                 this.couponData[j].isPrice=false;
                             }
                         }
                     }
                 }else{
+                   
                     for(let i=0;i<this.couponData.length;i++){
-
                         for(let j=0;j<this.goodsData.length;j++){
-                            if(this.goodsData[j].goodsId==this.couponData[i].couponId){
-                                console.log(123);
+                            if(this.goodsData[j].productInfoId==this.couponData[i].couponId){
                                 this.couponData[i].isPrice=false;
                             }
                         }
@@ -817,7 +819,6 @@
                 let _this = this;
                 let discount = row.discount;
                 this.discount=row.discount;
-                console.log(this.discount);
                 let noDiscountAmount = parseFloat(this.dialogForm.noDiscountAmount);
                 let recPrice = parseFloat(this.dialogForm.recPrice);
                 let totalPrice = parseFloat(this.dialogForm.totalPrice);
@@ -830,7 +831,6 @@
                    _this.dialogForm.discount2=row.discount;
                    _this.dialogForm.discount=row.discount;
                    _this.dialogForm.discountPrice = (totalPrice * discount + (1 - discount) * noDiscountAmount).toFixed(2);
-                   console.log(_this.dialogForm.discountPrice);
                    _this.smallRemoveZero=(discount*parseFloat(_this.dialogForm.discountPrice))-10;//最小抹零
                    _this.bigRemoveZero=discount*parseFloat(_this.dialogForm.discountPrice);//最大抹零
                    _this.dialogTreeFormVisible = false;
@@ -851,7 +851,6 @@
                                        this.goodsData.push(goodsData[i].detailList[j]);
                                    }
                                }
-                               console.log(this.goodsData);
                            }
                        })
 
@@ -891,7 +890,6 @@
                 let _this=this;
                 if(e.data){
                     const redata = JSON.parse(e.data);
-                    console.log(redata)
                     // debugger
                     //接收微信小程序数据
                     _this.statusList.unshift(redata.data);
@@ -1000,7 +998,7 @@
                 }else{
                     let that=this;
                     if(this.dialogForm.type==2){
-                        if(((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseInt(this.delPrice)-this.deductionAcount>this.amountPrice){
+                        if(((this.dialogForm.totalPrice-this.goodsPrice)*this.discount + (1 - this.discount)* this.dialogForm.noDiscountAmount)-this.dialogForm.coupon-parseFloat(this.delPrice)-this.deductionAcount>this.amountPrice){
                             this.$message({
                                 type:'error',
                                 message:'会员余额不足,请充值'
@@ -1024,7 +1022,6 @@
                         type: 'warning'
                     }).then(() => {
                         this.saveLoading = true;
-						console.log(this.dialogForm.orderNo);
 						requestStoreOrderpaymentCheck({orderNo:this.dialogForm.orderNo}).then((res)=>{
 							if(res.status==400){
 								this.$message({
@@ -1055,7 +1052,7 @@
                                 }
                                 if(this.dialogForm.type==2){
                                     this.discount = this.dialogForm.discount;
-                                    this.fraction=parseInt(this.delPrice);
+                                    this.fraction=parseFloat(this.delPrice);
                                 }else{
                                     this.discount = parseFloat(this.dialogForm.discount/10).toFixed(2);
                                     this.fraction = ((parseFloat(this.dialogForm.totalPrice) * this.discount + (1 - this.discount) *parseFloat(this.dialogForm.noDiscountAmount))-this.dialogForm.coupon).toFixed(2)-this.dialogForm.discountPrice;
@@ -1109,7 +1106,6 @@
                 this.dialogForm.coupon=0;
                 this.dialogFormTitle = '第'+row.deskNo+'号桌结算';
                 requestStoreOrdeCheckOrder({deskId:row.id}).then(res => {
-					console.log(res);
                     if(res.status == 200){
                         if(res.data.result == 200){
                             this.dialogFormVisible = true;
