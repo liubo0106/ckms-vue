@@ -763,7 +763,7 @@ export default {
                   this.$message({
                     type: "success",
                     message: res.msg,
-                    duration: 300,
+                    duration: 2000,
                     onClose: function() {
                       sessionStorage.setItem("groupId", res.data.id);
                       _this.id = res.data.id;
