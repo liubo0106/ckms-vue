@@ -84,7 +84,7 @@
                 </el-tab-pane>
             </el-tabs>
         </div>
-        <el-dialog title="选择菜品" :visible.sync="dialogVisible" width="50%" >
+        <el-dialog title="选择菜品" :visible.sync="dialogVisible" width="50%" :close="Cancelled">
             <el-form inline>
                 <el-form-item label="商品名称">
                     <el-input placeholder="商品名称" v-model="goodsData.name"></el-input>
@@ -115,7 +115,7 @@
                     :total="totalNum">
             </el-pagination>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button @click="Cancelled">取 消</el-button>
                 <el-button type="primary" @click="confirmData">确 认 选 择</el-button>
             </span>
         </el-dialog>
@@ -209,6 +209,10 @@
                 this.subGoodsData.couponName=data.name;
                 this.subGoodsData.couponAmount=data.price;
                 this.subGoodsData.id=data.id;
+            },
+            Cancelled(){
+                this.dialogVisible=false;
+                this.isDisplay=false;
             },
             confirmData(){
                 if(this.subGoodsData.id==''){
