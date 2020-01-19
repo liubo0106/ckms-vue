@@ -630,7 +630,7 @@
                 if(this.goodsData.length>=this.couponData.length){
                     for(let i=0;i<this.goodsData.length;i++){
                         for(let j=0;j<this.couponData.length;j++){
-                            if(this.goodsData[i].productInfoId==this.couponData[j].couponId){
+                            if(this.goodsData[i].productInfoId==this.couponData[j].couponId && this.couponData[i].couponUploadStatus=='0'){
                                 this.couponData[j].isPrice=false;
                             }
                         }
@@ -639,7 +639,7 @@
                    
                     for(let i=0;i<this.couponData.length;i++){
                         for(let j=0;j<this.goodsData.length;j++){
-                            if(this.goodsData[j].productInfoId==this.couponData[i].couponId){
+                            if(this.goodsData[j].productInfoId==this.couponData[i].couponId && this.couponData[i].couponUploadStatus=='0'){
                                 this.couponData[i].isPrice=false;
                             }
                         }
