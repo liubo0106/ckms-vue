@@ -84,7 +84,7 @@
                 </el-tab-pane>
             </el-tabs>
         </div>
-        <el-dialog title="选择菜品" :visible.sync="dialogVisible" width="50%" :close="Cancelled">
+        <el-dialog title="选择菜品" :visible.sync="dialogVisible" width="50%" :close="Cancelled" :before-close="Cancelled">
             <el-form inline>
                 <el-form-item label="商品名称">
                     <el-input placeholder="商品名称" v-model="goodsData.name"></el-input>
@@ -183,7 +183,7 @@
                 subGoodsData:{
                     couponName:'',
                     id:'',
-                    couponAmount:'',
+                    couponAmount:0,
                 },
                 goodsId:'',
                 totalNum:0,
@@ -222,6 +222,7 @@
                     });
                     return false;
                 }
+                this.dialogVisible=false;
             },
             subGoods(){
                 if(this.subGoodsData.id==''){
