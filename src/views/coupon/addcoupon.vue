@@ -221,8 +221,10 @@
                         message:'请选择菜品',
                     });
                     return false;
+                }else{
+                    this.dialogVisible=false;
                 }
-                this.dialogVisible=false;
+               
             },
             subGoods(){
                 if(this.subGoodsData.id==''){

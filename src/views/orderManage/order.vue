@@ -837,7 +837,12 @@
                    this.couponData=[];
                    requestCouponInfo({memberId:row.id}).then((res)=>{
                        if(res.status==200){
-                           this.couponData=res.data;
+                           let coupon=res.data;
+                           for(let i=0;i<coupon.length;i++){
+                               if(coupon[i].couponUploadStatus==0){
+                                    this.couponData.push(coupon[i]);
+                                }
+                           }
                            this.couponData.forEach((item)=>{
                                this.$set(item,'check',false)
                                this.$set(item,'isPrice',true)
