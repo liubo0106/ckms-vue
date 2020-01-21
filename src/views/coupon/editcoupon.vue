@@ -39,13 +39,13 @@
                         </el-form-item>
                         <el-form-item label="选择时间" v-if="showTime">
                             <el-radio-group v-model="couponData.time" @change="checkDate">
-                                <el-radio :label="1">星期一</el-radio>
-                                <el-radio :label="2">星期二</el-radio>
-                                <el-radio :label="3">星期三</el-radio>
-                                <el-radio :label="4">星期四</el-radio>
-                                <el-radio :label="5">星期五</el-radio>
-                                <el-radio :label="6">星期六</el-radio>
-                                <el-radio :label="7">星期日</el-radio>
+                                <el-radio :label="2">星期一</el-radio>
+                                <el-radio :label="3">星期二</el-radio>
+                                <el-radio :label="4">星期三</el-radio>
+                                <el-radio :label="5">星期四</el-radio>
+                                <el-radio :label="6">星期五</el-radio>
+                                <el-radio :label="7">星期六</el-radio>
+                                <el-radio :label="1">星期日</el-radio>
                             </el-radio-group>
                         </el-form-item>
                         <el-form-item label="活动时间" v-if="showDate">
