@@ -202,14 +202,14 @@
                 requestStorePrinterList({customerId:this.customerId}).then(res => {
                     let data = res.data;
                     if (data && data.length>0) {
-                        data.forEach(item=>{
-                            _this.editForm1.ORDER_PRINTER_IP = "";
-                            _this.editForm2.HOTPOT_PRINTER_IP ="";
-                            _this.editForm3.BARBECUE_PRINTER_IP ="";
-                            _this.editForm4.COLDDISH_PRINTER_IP ="";
-                            _this.editForm5.PASSDISH_PRINTER_IP ="";
-                            _this.editForm6.BACKKITCHEN_PRINTER_IP ="";
+                        _this.editForm1.ORDER_PRINTER_IP = "";
+                        _this.editForm2.HOTPOT_PRINTER_IP ="";
+                        _this.editForm3.BARBECUE_PRINTER_IP ="";
+                        _this.editForm4.COLDDISH_PRINTER_IP ="";
+                        _this.editForm5.PASSDISH_PRINTER_IP ="";
+                        _this.editForm6.BACKKITCHEN_PRINTER_IP ="";
 
+                        data.forEach(item=>{
                             if(item.code == 'ORDER_PRINTER'){
                                 _this.editForm1.ORDER_PRINTER_IP = item.ip;
                             }
