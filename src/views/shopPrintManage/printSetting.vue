@@ -104,8 +104,7 @@
             <el-row>
                 <el-form :model="editForm6" :rules="rules" ref="editForm6" label-width="200px" class="demo-ruleForm">
                     <el-col :span="11">
-                        <el-form-item label="后厨全量打印机"  prop="
-">
+                        <el-form-item label="后厨全量打印机"  prop="BACKKITCHEN_PRINTER_IP">
                             <el-input placeholder='请输入有效的IP地址' v-model="editForm6.BACKKITCHEN_PRINTER_IP" @change="submitForm('editForm6')" :maxlength="15"></el-input>
                         </el-form-item>
                     </el-col>
