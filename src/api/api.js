@@ -558,6 +558,8 @@ export const requestDetailMemberRecord = params => { return httpRequest('get', '
 export const requestStorePrinterList = params => { return httpRequest('get', 'server/storePrinter/list', params, '') };
 //添加
 export const requestStorePrinterSave = params => { return httpRequest('post', 'server/storePrinter/save', params, 'json') };
+// 删除
+export const requestStorePrinterClear = params => { return httpRequest('post', 'server/storePrinter/clear', params, 'json') };
 //测试
 export const requestStorePrinterTest = params => { return httpRequest('post', 'server/storePrinter/test', params, 'json') };
 

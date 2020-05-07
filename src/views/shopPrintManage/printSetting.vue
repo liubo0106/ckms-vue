@@ -12,9 +12,14 @@
                             <el-input placeholder='请输入有效的IP地址' v-model="editForm1.ORDER_PRINTER_IP" @change="submitForm('editForm1')" :maxlength="15"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="11">
+                    <el-col :span="2">
                         <el-form-item label-width="10px">
                             <el-button @click="testPrint('editForm1')" type="primary">测试</el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-form-item label-width="10px">
+                            <el-button @click="remove('editForm1')" type="danger">删除</el-button>
                         </el-form-item>
                     </el-col>
                 </el-form>
@@ -26,9 +31,14 @@
                             <el-input placeholder='请输入有效的IP地址' v-model="editForm2.HOTPOT_PRINTER_IP" @change="submitForm('editForm2')" :maxlength="15"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="11">
+                    <el-col :span="2">
                         <el-form-item label-width="10px">
                             <el-button @click="testPrint('editForm2')" type="primary">测试</el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-form-item label-width="10px">
+                            <el-button @click="remove('editForm2')" type="danger">删除</el-button>
                         </el-form-item>
                     </el-col>
                 </el-form>
@@ -40,9 +50,14 @@
                             <el-input placeholder='请输入有效的IP地址' v-model="editForm3.BARBECUE_PRINTER_IP" @change="submitForm('editForm3')" :maxlength="15"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="11">
+                    <el-col :span="2">
                         <el-form-item label-width="10px">
                             <el-button @click="testPrint('editForm3')" type="primary">测试</el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-form-item label-width="10px">
+                            <el-button @click="remove('editForm3')" type="danger">删除</el-button>
                         </el-form-item>
                     </el-col>
                 </el-form>
@@ -54,9 +69,54 @@
                             <el-input placeholder='请输入有效的IP地址' v-model="editForm4.COLDDISH_PRINTER_IP" @change="submitForm('editForm4')" :maxlength="15"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="11">
+                    <el-col :span="2">
                         <el-form-item label-width="10px">
                             <el-button @click="testPrint('editForm4')" type="primary">测试</el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-form-item label-width="10px">
+                            <el-button @click="remove('editForm4')" type="danger">删除</el-button>
+                        </el-form-item>
+                    </el-col>
+                </el-form>
+            </el-row>
+
+            <el-row>
+                <el-form :model="editForm5" :rules="rules" ref="editForm5" label-width="200px" class="demo-ruleForm">
+                    <el-col :span="11">
+                        <el-form-item label="传菜全量打印机"  prop="PASSDISH_PRINTER_IP">
+                            <el-input placeholder='请输入有效的IP地址' v-model="editForm5.PASSDISH_PRINTER_IP" @change="submitForm('editForm5')" :maxlength="15"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-form-item label-width="10px">
+                            <el-button @click="testPrint('editForm5')" type="primary">测试</el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-form-item label-width="10px">
+                            <el-button @click="remove('editForm5')" type="danger">删除</el-button>
+                        </el-form-item>
+                    </el-col>
+                </el-form>
+            </el-row>
+            <el-row>
+                <el-form :model="editForm6" :rules="rules" ref="editForm6" label-width="200px" class="demo-ruleForm">
+                    <el-col :span="11">
+                        <el-form-item label="后厨全量打印机"  prop="
+">
+                            <el-input placeholder='请输入有效的IP地址' v-model="editForm6.BACKKITCHEN_PRINTER_IP" @change="submitForm('editForm6')" :maxlength="15"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-form-item label-width="8px">
+                            <el-button @click="testPrint('editForm6')" type="primary">测试</el-button>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="2">
+                        <el-form-item label-width="8px">
+                            <el-button @click="remove('editForm6')" type="danger">删除</el-button>
                         </el-form-item>
                     </el-col>
                 </el-form>
@@ -65,7 +125,7 @@
     </section>
 </template>
 <script type="text/ecmascript-6">
-    import {requestStorePrinterList, requestStorePrinterSave, requestStorePrinterTest} from '../../api/api';
+    import {requestStorePrinterList, requestStorePrinterSave, requestStorePrinterTest,requestStorePrinterClear} from '../../api/api';
 
     export default {
         name: 'edit-user-manage',
@@ -88,6 +148,8 @@
                 saveLoading2: false,
                 saveLoading3: false,
                 saveLoading4: false,
+                saveLoading5: false,
+                saveLoading6: false,
                 editForm1: {
                     ORDER_PRINTER_IP: ''
                 },
@@ -99,6 +161,12 @@
                 },
                 editForm4: {
                     COLDDISH_PRINTER_IP: ''
+                },
+                editForm5: {
+                    PASSDISH_PRINTER_IP: ''
+                },
+                editForm6: {
+                    BACKKITCHEN_PRINTER_IP: ''
                 },
                 rules: {
                     HOTPOT_PRINTER_IP: [
@@ -116,6 +184,14 @@
                     ORDER_PRINTER_IP: [
                         { min: 1, max: 15, message: '长度在 1 到 15 个字', trigger: 'blur' },
                         { validator:validateIP,trigger:'blur' }
+                    ] ,
+                    PASSDISH_PRINTER_IP: [
+                        { min: 1, max: 15, message: '长度在 1 到 15 个字', trigger: 'blur' },
+                        { validator:validateIP,trigger:'blur' }
+                    ],
+                    BACKKITCHEN_PRINTER_IP: [
+                        { min: 1, max: 15, message: '长度在 1 到 15 个字', trigger: 'blur' },
+                        { validator:validateIP,trigger:'blur' }
                     ]
                 }
             }
@@ -127,6 +203,13 @@
                     let data = res.data;
                     if (data && data.length>0) {
                         data.forEach(item=>{
+                            _this.editForm1.ORDER_PRINTER_IP = "";
+                            _this.editForm2.HOTPOT_PRINTER_IP ="";
+                            _this.editForm3.BARBECUE_PRINTER_IP ="";
+                            _this.editForm4.COLDDISH_PRINTER_IP ="";
+                            _this.editForm5.PASSDISH_PRINTER_IP ="";
+                            _this.editForm6.BACKKITCHEN_PRINTER_IP ="";
+
                             if(item.code == 'ORDER_PRINTER'){
                                 _this.editForm1.ORDER_PRINTER_IP = item.ip;
                             }
@@ -139,6 +222,12 @@
                             if(item.code == 'COLDDISH_PRINTER'){
                                 _this.editForm4.COLDDISH_PRINTER_IP = item.ip;
                             }
+                            if(item.code == 'PASSDISH_PRINTER'){
+                                _this.editForm5.PASSDISH_PRINTER_IP = item.ip;
+                            }
+                            if(item.code == 'BACKKITCHEN_PRINTER'){
+                                _this.editForm6.BACKKITCHEN_PRINTER_IP = item.ip;
+                            }
                         });
                     } else {
                         this.$message({
@@ -147,6 +236,82 @@
                         });
                     }
                 });
+            },
+
+            remove(formName){
+                let _this = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        let editFormParam ={};
+                        if(formName == 'editForm1'){
+                            _this.saveLoading1 = true;
+                            editFormParam ={
+                                code: 'ORDER_PRINTER',
+                                ip: _this.editForm1.ORDER_PRINTER_IP,
+                                customerId : _this.customerId
+                            };
+                        }
+                        if(formName == 'editForm2'){
+                            _this.saveLoading2 = true;
+                            editFormParam ={
+                                code: 'HOTPOT_PRINTER',
+                                ip: _this.editForm2.HOTPOT_PRINTER_IP,
+                                customerId : _this.customerId
+                            };
+                        }
+                        if(formName == 'editForm3'){
+                            _this.saveLoading3 = true;
+                            editFormParam ={
+                                code: 'BARBECUE_PRINTER',
+                                ip: _this.editForm3.BARBECUE_PRINTER_IP,
+                                customerId : _this.customerId
+                            };
+                        }
+                        if(formName == 'editForm4'){
+                            _this.saveLoading4 = true;
+                            editFormParam ={
+                                code: 'COLDDISH_PRINTER',
+                                ip: _this.editForm4.COLDDISH_PRINTER_IP,
+                                customerId : _this.customerId
+                            };
+                        }
+                        if(formName == 'editForm5'){
+                            _this.saveLoading5 = true;
+                            editFormParam ={
+                                code: 'PASSDISH_PRINTER',
+                                ip: _this.editForm5.PASSDISH_PRINTER_IP,
+                                customerId : _this.customerId
+                            };
+                        }
+                        if(formName == 'editForm6'){
+                            _this.saveLoading6 = true;
+                            editFormParam ={
+                                code: 'BACKKITCHEN_PRINTER',
+                                ip: _this.editForm6.BACKKITCHEN_PRINTER_IP,
+                                customerId : _this.customerId
+                            };
+                        }
+                        requestStorePrinterClear(editFormParam).then(res => {
+                            this.$message({
+                                type: 'success',
+                                message: '操作成功!',
+                                duration:300,
+                                onClose:function(){
+                                    _this.getAjaxInfo();
+                                    _this.saveLoading1 = false;
+                                    _this.saveLoading2 = false;
+                                    _this.saveLoading3 = false;
+                                    _this.saveLoading4 = false;
+                                    _this.saveLoading5 = false;
+                                    _this.saveLoading6 = false;
+                                }
+                            });
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+
             },
             submitForm(formName){
                 let _this = this;
@@ -185,6 +350,22 @@
                                 customerId : _this.customerId
                             };
                         }
+                        if(formName == 'editForm5'){
+                            _this.saveLoading5 = true;
+                            editFormParam ={
+                                code: 'PASSDISH_PRINTER',
+                                ip: _this.editForm5.PASSDISH_PRINTER_IP,
+                                customerId : _this.customerId
+                            };
+                        }
+                        if(formName == 'editForm6'){
+                            _this.saveLoading6 = true;
+                            editFormParam ={
+                                code: 'BACKKITCHEN_PRINTER',
+                                ip: _this.editForm6.BACKKITCHEN_PRINTER_IP,
+                                customerId : _this.customerId
+                            };
+                        }
                         requestStorePrinterSave(editFormParam).then(res => {
                             this.$message({
                                 type: 'success',
@@ -196,6 +377,8 @@
                                     _this.saveLoading2 = false;
                                     _this.saveLoading3 = false;
                                     _this.saveLoading4 = false;
+                                    _this.saveLoading5 = false;
+                                    _this.saveLoading6 = false;
                                 }
                             });
                         });
@@ -228,6 +411,18 @@
                 if(formName == 'editForm4'){
                     editFormParam ={
                         code: 'COLDDISH_PRINTER',
+                        customerId : _this.customerId
+                    };
+                }
+                if(formName == 'editForm5'){
+                    editFormParam ={
+                        code: 'PASSDISH_PRINTER',
+                        customerId : _this.customerId
+                    };
+                }
+                if(formName == 'editForm6'){
+                    editFormParam ={
+                        code: 'BACKKITCHEN_PRINTER',
                         customerId : _this.customerId
                     };
                 }
